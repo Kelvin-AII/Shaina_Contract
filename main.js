@@ -53,3 +53,19 @@ async function generatePDF() {
       document.body.removeChild(container);
     });
 }
+const data = {
+  tenant: document.getElementById("tenant").value,
+  id: document.getElementById("id").value,
+  address: document.getElementById("address").value,
+  period: document.getElementById("period").value,
+  rent: document.getElementById("rent").value,
+  deposit: document.getElementById("deposit").value,
+  total: document.getElementById("total").value,
+
+  day: "1",
+  month: "January",
+  year: "2026",
+
+  day_cn: "1",
+  month_cn: "6"
+};
