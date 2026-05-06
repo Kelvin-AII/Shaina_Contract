@@ -2,190 +2,38 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>房屋租赁合同生成器</title>
+  <title>合同生成器</title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-  <style>
-    body {
-      font-family: "Noto Sans SC", Arial;
-      max-width: 700px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    h2 {
-      margin-bottom: 10px;
-    }
-
-    .field {
-      margin-bottom: 10px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 6px;
-      font-size: 14px;
-    }
-
-    button {
-      margin-top: 15px;
-      padding: 10px;
-      width: 100%;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    /* 合同样式 */
-    #pdf {
-      display: none;
-      font-size: 14px;
-      line-height: 1.8;
-      padding: 30px;
-    }
-
-    #pdf h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .section {
-      margin-bottom: 10px;
-    }
-  </style>
+  <script src="main.js" defer></script>
 </head>
 
 <body>
 
-<h2>房屋租赁信息填写</h2>
+<h2>填写合同信息</h2>
 
-<div class="field">
-  <label>出租人（甲方）</label>
-  <input id="landlord" value="张三">
-</div>
+<input id="landlord" value="张三" placeholder="甲方"><br>
+<input id="tenant" value="李四" placeholder="乙方"><br>
+<input id="address" value="东京涩谷区" placeholder="地址"><br>
 
-<div class="field">
-  <label>承租人（乙方）</label>
-  <input id="tenant" value="李四">
-</div>
+<select id="usage">
+  <option>居住</option>
+  <option>办公</option>
+</select><br>
 
-<div class="field">
-  <label>房屋地址</label>
-  <input id="address" value="东京都涩谷区XX街道1-1">
-</div>
+<input id="rent" value="80000"><br>
+<input id="deposit" value="80000"><br>
+<input id="months" value="12"><br>
+<input id="start" value="2026-06-01"><br>
 
-<div class="field">
-  <label>房屋用途</label>
-  <select id="usage">
-    <option selected>居住</option>
-    <option>办公</option>
-  </select>
-</div>
+<select id="payment">
+  <option>银行转账</option>
+  <option>现金</option>
+</select><br>
 
-<div class="field">
-  <label>租金（每月）</label>
-  <input id="rent" value="80000">
-</div>
+<input id="location" value="东京"><br>
 
-<div class="field">
-  <label>押金</label>
-  <input id="deposit" value="80000">
-</div>
-
-<div class="field">
-  <label>租期（月）</label>
-  <input id="months" value="12">
-</div>
-
-<div class="field">
-  <label>起始日期</label>
-  <input id="start" value="2026-06-01">
-</div>
-
-<div class="field">
-  <label>支付方式</label>
-  <select id="payment">
-    <option selected>银行转账</option>
-    <option>现金</option>
-  </select>
-</div>
-
-<div class="field">
-  <label>签订地点</label>
-  <input id="location" value="东京">
-</div>
-
-<button onclick="generatePDF()">生成租赁合同 PDF</button>
-
-<!-- 合同模板 -->
-<div id="pdf">
-  <h1>房屋租赁合同</h1>
-
-  <div class="section">出租人（甲方）：<span id="t-landlord"></span></div>
-  <div class="section">承租人（乙方）：<span id="t-tenant"></span></div>
-
-  <div class="section">
-    一、房屋情况  
-    甲方将位于 <span id="t-address"></span> 的房屋出租给乙方使用，用途为 <span id="t-usage"></span>。
-  </div>
-
-  <div class="section">
-    二、租赁期限  
-    租期共 <span id="t-months"></span> 个月，自 <span id="t-start"></span> 起计算。
-  </div>
-
-  <div class="section">
-    三、租金及押金  
-    每月租金为 <span id="t-rent"></span> 元，押金为 <span id="t-deposit"></span> 元。
-  </div>
-
-  <div class="section">
-    四、支付方式  
-    租金通过 <span id="t-payment"></span> 支付。
-  </div>
-
-  <div class="section">
-    五、其他约定  
-    双方应遵守合同约定，按时履行义务。
-  </div>
-
-  <br><br>
-
-  <div>甲方签字：______________</div>
-  <div>乙方签字：______________</div>
-
-  <br>
-
-  <div>签订地点：<span id="t-location"></span></div>
-  <div>签订日期：________年____月____日</div>
-</div>
-
-<script>
-function generatePDF() {
-
-  const ids = [
-    "landlord","tenant","address","usage","rent",
-    "deposit","months","start","payment","location"
-  ];
-
-  ids.forEach(id => {
-    document.getElementById("t-" + id).innerText =
-      document.getElementById(id).value;
-  });
-
-  const element = document.getElementById("pdf");
-
-  html2pdf()
-    .from(element)
-    .set({
-      margin: 15,
-      filename: "lease_contract.pdf",
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4" }
-    })
-    .save();
-}
-</script>
+<button onclick="generatePDF()">生成 PDF</button>
 
 </body>
 </html>
