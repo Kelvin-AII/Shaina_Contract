@@ -2,38 +2,102 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>合同生成器</title>
+  <title>房屋租赁合同生成器</title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="main.js" defer></script>
+  <script defer src="main.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, "Noto Sans SC";
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
 
-<h2>填写合同信息</h2>
+<h2>房屋租赁合同信息填写</h2>
 
-<input id="landlord" value="张三" placeholder="甲方"><br>
-<input id="tenant" value="李四" placeholder="乙方"><br>
-<input id="address" value="东京涩谷区" placeholder="地址"><br>
+<table>
+  <tr>
+    <td>出租人（甲方）</td>
+    <td><input id="landlord" value="张三"></td>
+  </tr>
+  <tr>
+    <td>承租人（乙方）</td>
+    <td><input id="tenant" value="李四"></td>
+  </tr>
+  <tr>
+    <td>房屋地址</td>
+    <td><input id="address" value="东京都涩谷区XX街道1-1"></td>
+  </tr>
+  <tr>
+    <td>房屋用途</td>
+    <td>
+      <select id="usage">
+        <option>居住</option>
+        <option>办公</option>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td>租金（月）</td>
+    <td><input id="rent" value="80000"></td>
+  </tr>
+  <tr>
+    <td>押金</td>
+    <td><input id="deposit" value="80000"></td>
+  </tr>
+  <tr>
+    <td>租期（月）</td>
+    <td><input id="months" value="12"></td>
+  </tr>
+  <tr>
+    <td>起始日期</td>
+    <td><input id="start" value="2026-06-01"></td>
+  </tr>
+  <tr>
+    <td>支付方式</td>
+    <td>
+      <select id="payment">
+        <option>银行转账</option>
+        <option>现金</option>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td>签订地点</td>
+    <td><input id="location" value="东京"></td>
+  </tr>
+</table>
 
-<select id="usage">
-  <option>居住</option>
-  <option>办公</option>
-</select><br>
-
-<input id="rent" value="80000"><br>
-<input id="deposit" value="80000"><br>
-<input id="months" value="12"><br>
-<input id="start" value="2026-06-01"><br>
-
-<select id="payment">
-  <option>银行转账</option>
-  <option>现金</option>
-</select><br>
-
-<input id="location" value="东京"><br>
-
-<button onclick="generatePDF()">生成 PDF</button>
+<button onclick="generatePDF()">生成合同 PDF</button>
 
 </body>
 </html>
