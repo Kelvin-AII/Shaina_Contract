@@ -6,7 +6,7 @@
 
   <title>许可协议 PDF 生成器</title>
 
-  <script defer src="main.js"></script>
+  <script defer src="main.js?v=20260517-2"></script>
 
   <style>
     * {
@@ -175,7 +175,7 @@
     <textarea id="rawInput" placeholder="请粘贴合同资料，例如：居住地址、入住日期、退房日期、签约日期、每月租金、姓名、证件号码等"></textarea>
 
     <div class="button-row">
-      <button type="button" onclick="parseInput()">自动识别并填充</button>
+      <button type="button" id="parseInputBtn">自动识别并填充</button>
     </div>
 
     <h2>基础信息</h2>
@@ -261,7 +261,7 @@
     </table>
 
     <div class="button-row">
-      <button type="button" onclick="downloadPDF()">下载 PDF</button>
+      <button type="button" id="downloadPdfBtn">下载 PDF</button>
     </div>
 
     <div class="note">
