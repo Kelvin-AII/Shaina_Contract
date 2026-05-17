@@ -395,100 +395,43 @@
 
   <p class="intro">A1 Plus Global Limited 及许可人同意遵守及履行下列條款：</p>
 
-  <div class="clause">
-    <div class="clause-no">1.</div>
-    <div class="clause-text">许可人不得轉讓、轉租或分租該许可居住地的物業或其任何部分或將該许可居住地的物業或其任何部分的佔用權讓予任何其他人等，此许可协议權益將為许可人擁有。</div>
-  </div>
+  <div class="clause"><div class="clause-no">1.</div><div class="clause-text">许可人不得轉讓、轉租或分租該许可居住地的物業或其任何部分或將該许可居住地的物業或其任何部分的佔用權讓予任何其他人等，此许可协议權益將為许可人擁有。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">2.</div>
-    <div class="clause-text">许可人須遵守香港一干法律條例和規則及該许可居住地的物業所屬的大廈有關的公契內的條款，许可人亦不可違反屬該许可居住地的物業地段內的官批地契上的任何制約性條款。</div>
-  </div>
+  <div class="clause"><div class="clause-no">2.</div><div class="clause-text">许可人須遵守香港一干法律條例和規則及該许可居住地的物業所屬的大廈有關的公契內的條款，许可人亦不可違反屬該许可居住地的物業地段內的官批地契上的任何制約性條款。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">3.</div>
-    <div class="clause-text">许可人除將該许可居住地的物業作其個人使用於作息用途外，不可將該许可居住地的物業或其任何部分作商業或其他用途。</div>
-  </div>
+  <div class="clause"><div class="clause-no">3.</div><div class="clause-text">许可人除將該许可居住地的物業作其個人使用於作息用途外，不可將該许可居住地的物業或其任何部分作商業或其他用途。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">4.</div>
-    <div class="clause-text">许可人須在#保证金支付截止日期#之前提前向A1 Plus Global Limited 支付许可保證金 #保证金# HKD（銀行轉帳，電子支付港幣）及许可人須於#第一期截止#前向A1 Plus Global Limited 支付房子租金 #第一期租金# HKD（銀行轉帳，電子支付港幣）。倘许可人於應繳總许可费用之日的2天內仍未清付該總许可费用，則A1 Plus Global Limited有權採取適當行動追討许可人所欠的總许可费用而由此而引起的一切合理的直接費用及開支將構成许可人所欠A1 Plus Global Limited的債項，A1 Plus Global Limited將有權向许可人一併追討所欠款項全數而無須退還许可人已支付押金和總许可费用。此合同為死約，如许可人提早結束许可使用期，所繳交的總许可费用或餘下的许可费用將不會退還。</div>
-  </div>
+  <div class="clause"><div class="clause-no">4.</div><div class="clause-text">许可人須在#保证金支付截止日期#之前提前向A1 Plus Global Limited 支付许可保證金 #保证金# HKD（銀行轉帳，電子支付港幣）及许可人須於#第一期截止#前向A1 Plus Global Limited 支付房子租金 #第一期租金# HKD（銀行轉帳，電子支付港幣）。倘许可人於應繳總许可费用之日的2天內仍未清付該總许可费用，則A1 Plus Global Limited有權採取適當行動追討许可人所欠的總许可费用而由此而引起的一切合理的直接費用及開支將構成许可人所欠A1 Plus Global Limited的債項，A1 Plus Global Limited將有權向许可人一併追討所欠款項全數而無須退還许可人已支付押金和總许可费用。此合同為死約，如许可人提早結束许可使用期，所繳交的總许可费用或餘下的许可费用將不會退還。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">5.</div>
-    <div class="clause-text">许可人須在许可协议期內保持许可居住地的物業內部的維修狀態良好（自然損耗及因固有的缺陷所產生的損壞除外）並須於此许可协议終止時將许可居住地的物業在同樣的維修狀態下交吉交回，否則A1 Plus Global Limited可在许可人保證金裡扣除相應的費用。在许可使用期间完结当日即#退房日期#，许可人需于中午十二点前迁出，以便安排清洁。在当日十二点后许可人遗留在许可居住地址物业的所有物件和财产，視作许可人遗弃的垃圾，A1 Plus Global Limited可以安排处置或丢掉，而不需要另行通知或赔偿许可人。如许可人遗留的垃圾过多，A1 Plus Global Limited有权向许可人收取费用或在许可保证金中扣除。</div>
-  </div>
+  <div class="clause"><div class="clause-no">5.</div><div class="clause-text">许可人須在许可协议期內保持许可居住地的物業內部的維修狀態良好（自然損耗及因固有的缺陷所產生的損壞除外）並須於此许可协议終止時將许可居住地的物業在同樣的維修狀態下交吉交回，否則A1 Plus Global Limited可在许可人保證金裡扣除相應的費用。在许可使用期间完结当日即#退房日期#，许可人需于中午十二点前迁出，以便安排清洁。在当日十二点后许可人遗留在许可居住地址物业的所有物件和财产，視作许可人遗弃的垃圾，A1 Plus Global Limited可以安排处置或丢掉，而不需要另行通知或赔偿许可人。如许可人遗留的垃圾过多，A1 Plus Global Limited有权向许可人收取费用或在许可保证金中扣除。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">6.</div>
-    <div class="clause-text">许可人須交予A1 Plus Global Limited许可保證金（相等於兩個月許可費用）作為保證许可人遵守及履行此许可协议上许可人所需遵守及履行的條款的保證金。若许可人在許可時期內並無干犯此合約內任何條款，則A1 Plus Global Limited須於许可使用期間完結後及收回交吉的许可居住地的物業或收回一切许可人欠款後（以較遲者作準）21個工作天內無息退還該保證金予许可人。但若许可人拖欠根據此協議需要支付的許可費用及/或其他款項超過2天，或若许可人違反此協議內任何條款，A1 Plus Global Limited可合法收回該许可居住地的物業而此许可协议將立刻被終止；A1 Plus Global Limited可從许可保證金內扣除因许可人違約而令A1 Plus Global Limited所受的損失，而此項權利將不會影響A1 Plus Global Limited因许可人違約而可採取的其他合法行動的權利。</div>
-  </div>
+  <div class="clause"><div class="clause-no">6.</div><div class="clause-text">许可人須交予A1 Plus Global Limited许可保證金（相等於兩個月許可費用）作為保證许可人遵守及履行此许可协议上许可人所需遵守及履行的條款的保證金。若许可人在許可時期內並無干犯此合約內任何條款，則A1 Plus Global Limited須於许可使用期間完結後及收回交吉的许可居住地的物業或收回一切许可人欠款後（以較遲者作準）21個工作天內無息退還該保證金予许可人。但若许可人拖欠根據此協議需要支付的許可費用及/或其他款項超過2天，或若许可人違反此協議內任何條款，A1 Plus Global Limited可合法收回該许可居住地的物業而此许可协议將立刻被終止；A1 Plus Global Limited可從许可保證金內扣除因许可人違約而令A1 Plus Global Limited所受的損失，而此項權利將不會影響A1 Plus Global Limited因许可人違約而可採取的其他合法行動的權利。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">7.</div>
-    <div class="clause-text">A1 Plus Global Limited須保養及適當維修該许可居住地的物業內各主要結構部分（包括主要的排污渠、喉管和電線）。房子裡的電器，如非许可人人為損壞，維修費用由A1 Plus Global Limited負責，唯A1 Plus Global Limited須在收到许可人的書面要求或WeChat通知後才會有責任在合理時限內將有關損壞維修妥當。如遇緊急事情須修理，A1 Plus Global Limited會盡力聯絡專業維修員，而維修員會根據經驗及緊急狀況安排最適當的時間上門維修；如遇非緊急事情，則會排期處理及盡力盡快解決。如房間內的傢俬電器等能正常使用，许可人不會以東西折舊而要求A1 Plus Global Limited更換新的。</div>
-  </div>
+  <div class="clause"><div class="clause-no">7.</div><div class="clause-text">A1 Plus Global Limited須保養及適當維修該许可居住地的物業內各主要結構部分（包括主要的排污渠、喉管和電線）。房子裡的電器，如非许可人人為損壞，維修費用由A1 Plus Global Limited負責，唯A1 Plus Global Limited須在收到许可人的書面要求或WeChat通知後才會有責任在合理時限內將有關損壞維修妥當。如遇緊急事情須修理，A1 Plus Global Limited會盡力聯絡專業維修員，而維修員會根據經驗及緊急狀況安排最適當的時間上門維修；如遇非緊急事情，則會排期處理及盡力盡快解決。如房間內的傢俬電器等能正常使用，许可人不會以東西折舊而要求A1 Plus Global Limited更換新的。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">8.</div>
-    <div class="clause-text">许可人不得收藏違禁香港法例之物品，舉凡軍械、火藥、磺硝、汽油及揮發性之化工原料，或有爆炸性之危險品，均不許存放該樓之內外任何地方。许可人不能將該许可居住地的物業作任何非法用途。</div>
-  </div>
+  <div class="clause"><div class="clause-no">8.</div><div class="clause-text">许可人不得收藏違禁香港法例之物品，舉凡軍械、火藥、磺硝、汽油及揮發性之化工原料，或有爆炸性之危險品，均不許存放該樓之內外任何地方。许可人不能將該许可居住地的物業作任何非法用途。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">9.</div>
-    <div class="clause-text">许可人須在许可协议期內自行投買風災、水、火、盜竊、意外保險，或其他保障许可人或第三者的保險等，A1 Plus Global Limited對许可人或第三者等的生命或財產等損失不負任何賠償責任。</div>
-  </div>
+  <div class="clause"><div class="clause-no">9.</div><div class="clause-text">许可人須在许可协议期內自行投買風災、水、火、盜竊、意外保險，或其他保障许可人或第三者的保險等，A1 Plus Global Limited對许可人或第三者等的生命或財產等損失不負任何賠償責任。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">10.</div>
-    <div class="clause-text">许可人容許A1 Plus Global Limited或其授權代理人在適當時間入屋檢視該物業或進行任何修理工程。A1 Plus Global Limited保留进入和管理的权利（包括但不限於为清洁、维修、检查、带潜在新用户看房等）。许可人在许可居住地的物業房间不享有独立、排他的占有权，空间可能与其他被许可人共享（如公共区域等）。</div>
-  </div>
+  <div class="clause"><div class="clause-no">10.</div><div class="clause-text">许可人容許A1 Plus Global Limited或其授權代理人在適當時間入屋檢視該物業或進行任何修理工程。A1 Plus Global Limited保留进入和管理的权利（包括但不限於为清洁、维修、检查、带潜在新用户看房等）。许可人在许可居住地的物業房间不享有独立、排他的占有权，空间可能与其他被许可人共享（如公共区域等）。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">11.</div>
-    <div class="clause-text">如有必要，A1 Plus Global Limited可以提前1个月通知租户终止此许可协议，包括但不限于政府或其他人士征收、房屋拆除等而导致许可人无法继续使用物业的情况。如非许可人问题而A1 Plus Global Limited单方面终止此协议的（不可抗力如天灾人祸战乱等除外），A1 Plus Global Limited需要按比例退还剩余还未居住的许可费用，及在房子没有被许可人损毁和如入住当日卫生清洁状况下退回全额保证金。</div>
-  </div>
+  <div class="clause"><div class="clause-no">11.</div><div class="clause-text">如有必要，A1 Plus Global Limited可以提前1个月通知租户终止此许可协议，包括但不限于政府或其他人士征收、房屋拆除等而导致许可人无法继续使用物业的情况。如非许可人问题而A1 Plus Global Limited单方面终止此协议的（不可抗力如天灾人祸战乱等除外），A1 Plus Global Limited需要按比例退还剩余还未居住的许可费用，及在房子没有被许可人损毁和如入住当日卫生清洁状况下退回全额保证金。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">12.</div>
-    <div class="clause-text">此合約內的英文文本與中文文本存有差異時，將以中文為準。</div>
-  </div>
+  <div class="clause"><div class="clause-no">12.</div><div class="clause-text">此合約內的英文文本與中文文本存有差異時，將以中文為準。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">13.</div>
-    <div class="clause-text">如果对本协议有任何争议，案件将在A1 Plus Global Limited董事居住地法院解决。</div>
-  </div>
+  <div class="clause"><div class="clause-no">13.</div><div class="clause-text">如果对本协议有任何争议，案件将在A1 Plus Global Limited董事居住地法院解决。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">14.</div>
-    <div class="clause-text">许可人遷出時，應搬走自己的物品。如许可人遺留的物件須由A1 Plus Global Limited代為清理，產生的相應費用A1 Plus Global Limited將在许可人的许可保證金內扣除。此协议一经签署，便会取代以往所有合同及口头承诺，以此许可协议为准。</div>
-  </div>
+  <div class="clause"><div class="clause-no">14.</div><div class="clause-text">许可人遷出時，應搬走自己的物品。如许可人遺留的物件須由A1 Plus Global Limited代為清理，產生的相應費用A1 Plus Global Limited將在许可人的许可保證金內扣除。此协议一经签署，便会取代以往所有合同及口头承诺，以此许可协议为准。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">15.</div>
-    <div class="clause-text">电、水、城市煤气和无线网絡，A1 Plus Global Limited會每月津貼租客港幣334元，超出用量租客需要按租住人數比例平攤水電煤網費用。多餘的津貼費用不會累積至下個月，多余的津贴也不能换成实质费用金额返还许可人。津贴方式会由租客每月根据水电煤网相关部门的账单先缴账，每三个月许可人可透过清楚公式向A1 Plus Global Limited收回津贴费用，A1 Plus Global Limited可在三十天内返还相应金额，A1 Plus Global Limited保留最终决定权。</div>
-  </div>
+  <div class="clause"><div class="clause-no">15.</div><div class="clause-text">电、水、城市煤气和无线网絡，A1 Plus Global Limited會每月津貼租客港幣334元，超出用量租客需要按租住人數比例平攤水電煤網費用。多餘的津貼費用不會累積至下個月，多余的津贴也不能换成实质费用金额返还许可人。津贴方式会由租客每月根据水电煤网相关部门的账单先缴账，每三个月许可人可透过清楚公式向A1 Plus Global Limited收回津贴费用，A1 Plus Global Limited可在三十天内返还相应金额，A1 Plus Global Limited保留最终决定权。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">16.</div>
-    <div class="clause-text">许可人不能对任何室友或邻居構成骚扰或令屋內發出異味惡臭或室內外隨處垃圾或高空擲物或昆蟲蟑螂等從屋內走出等。如许可人因個人衛生習慣導致蟑螂或昆蟲源頭在房間內產生，许可人可自行聘請專業除蟲公司處理。如以上問題一直未被许可人正視處理，導致收到室友或鄰居或香港警方或香港食環署的投诉，A1 Plus Global Limited将通过Whatsapp或微信向许可人发出警告信。如果许可人3天内没有改善，A1 Plus Global Limited有权驱逐许可人，在此情况下许可人支付的许可費用和许可保證金将不予退还。许可人如疏忽、蓄意或惡意毁壞房子需賠償，许可人需為自身的疏忽和對房子的毀壞負上法律責任。</div>
-  </div>
+  <div class="clause"><div class="clause-no">16.</div><div class="clause-text">许可人不能对任何室友或邻居構成骚扰或令屋內發出異味惡臭或室內外隨處垃圾或高空擲物或昆蟲蟑螂等從屋內走出等。如许可人因個人衛生習慣導致蟑螂或昆蟲源頭在房間內產生，许可人可自行聘請專業除蟲公司處理。如以上問題一直未被许可人正視處理，導致收到室友或鄰居或香港警方或香港食環署的投诉，A1 Plus Global Limited将通过Whatsapp或微信向许可人发出警告信。如果许可人3天内没有改善，A1 Plus Global Limited有权驱逐许可人，在此情况下许可人支付的许可費用和许可保證金将不予退还。许可人如疏忽、蓄意或惡意毁壞房子需賠償，许可人需為自身的疏忽和對房子的毀壞負上法律責任。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">17.</div>
-    <div class="clause-text">为保障许可人，A1 Plus Global Limited会替许可人打整租厘印，厘印费用为许可人承担，即许可人需在入住前与A1 Plus Global Limited再签订一份整租许可协议，即许可人为主要许可人。如许可人拒绝签订整租协议，此协议会作废及A1 Plus Global Limited有权不退还已收取的所有金额。</div>
-  </div>
+  <div class="clause"><div class="clause-no">17.</div><div class="clause-text">为保障许可人，A1 Plus Global Limited会替许可人打整租厘印，厘印费用为许可人承担，即许可人需在入住前与A1 Plus Global Limited再签订一份整租许可协议，即许可人为主要许可人。如许可人拒绝签订整租协议，此协议会作废及A1 Plus Global Limited有权不退还已收取的所有金额。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">18.</div>
-    <div class="clause-text">许可人不用负担大厦管理费。</div>
-  </div>
+  <div class="clause"><div class="clause-no">18.</div><div class="clause-text">许可人不用负担大厦管理费。</div></div>
 
-  <div class="clause">
-    <div class="clause-no">19.</div>
-    <div class="clause-text">许可人容许其他下届潜在许可人进入单位及其房间作参观；A1 Plus Global Limited会通过Whatsapp、SMS或Wechat提前通知租户。</div>
-  </div>
+  <div class="clause"><div class="clause-no">19.</div><div class="clause-text">许可人容许其他下届潜在许可人进入单位及其房间作参观；A1 Plus Global Limited会通过Whatsapp、SMS或Wechat提前通知租户。</div></div>
 
   <div class="bank-info">
     <p><strong>公司帳戶</strong><br>
@@ -820,4 +763,46 @@ ${contract}
   window.parseInput = parseInput;
   window.calculate = calculate;
   window.downloadPDF = downloadPDF;
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const parseInputBtn = document.getElementById("parseInputBtn");
+
+    if (parseInputBtn) {
+      parseInputBtn.addEventListener("click", function () {
+        parseInput();
+      });
+    }
+
+    const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+
+    if (downloadPdfBtn) {
+      downloadPdfBtn.addEventListener("click", function () {
+        downloadPDF();
+      });
+    }
+
+    const autoCalcFields = [
+      "address",
+      "checkin",
+      "checkout",
+      "signDate",
+      "rent",
+      "name",
+      "idNumber"
+    ];
+
+    autoCalcFields.forEach(function (id) {
+      const el = document.getElementById(id);
+
+      if (el) {
+        el.addEventListener("change", function () {
+          calculate();
+        });
+
+        el.addEventListener("blur", function () {
+          calculate();
+        });
+      }
+    });
+  });
 })();
