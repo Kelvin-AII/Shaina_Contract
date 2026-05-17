@@ -1,103 +1,273 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>房屋租赁合同生成器</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <title>许可协议 PDF 生成器</title>
+
   <script defer src="main.js"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, "Noto Sans SC";
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: 26px;
+      line-height: 1.3;
+    }
+
+    h2 {
+      margin: 28px 0 12px;
+      font-size: 20px;
+      border-left: 4px solid #111827;
+      padding-left: 10px;
+    }
+
+    p {
+      line-height: 1.7;
+    }
+
+    .hint {
+      background: #f9fafb;
+      border: 1px dashed #9ca3af;
+      padding: 14px;
+      margin-bottom: 12px;
+      white-space: pre-line;
+      font-size: 14px;
+      line-height: 1.7;
+      border-radius: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 12px;
+      font-size: 15px;
+      line-height: 1.6;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      resize: vertical;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 10px;
+      background: #ffffff;
     }
 
     td {
-      border: 1px solid #ccc;
-      padding: 8px;
+      border: 1px solid #e5e7eb;
+      padding: 10px;
+      vertical-align: middle;
     }
 
-    input, select {
+    td:first-child {
+      width: 180px;
+      background: #f9fafb;
+      font-weight: 600;
+    }
+
+    input {
       width: 100%;
-      padding: 5px;
+      padding: 9px 10px;
+      font-size: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+    }
+
+    .button-row {
+      margin-top: 16px;
     }
 
     button {
-      margin-top: 20px;
-      padding: 10px;
       width: 100%;
-      font-size: 16px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
+      background: #111827;
+      color: #ffffff;
+    }
+
+    button:hover {
+      opacity: 0.92;
+    }
+
+    .note {
+      margin-top: 12px;
+      padding: 12px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #7c2d12;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      .page {
+        padding: 16px;
+        border-radius: 8px;
+      }
+
+      td,
+      tr,
+      table {
+        display: block;
+        width: 100%;
+      }
+
+      td:first-child {
+        width: 100%;
+        border-bottom: none;
+      }
     }
   </style>
 </head>
 
 <body>
+  <div class="page">
+    <h1>许可协议 PDF 生成器</h1>
 
-<h2>房屋租赁合同信息填写</h2>
+    <p>
+      输入资料后，系统会自动识别并填入表单，再生成合同 PDF。
+    </p>
 
-<table>
-  <tr>
-    <td>出租人（甲方）</td>
-    <td><input id="landlord" value="张三"></td>
-  </tr>
-  <tr>
-    <td>承租人（乙方）</td>
-    <td><input id="tenant" value="李四"></td>
-  </tr>
-  <tr>
-    <td>房屋地址</td>
-    <td><input id="address" value="东京都涩谷区XX街道1-1"></td>
-  </tr>
-  <tr>
-    <td>房屋用途</td>
-    <td>
-      <select id="usage">
-        <option>居住</option>
-        <option>办公</option>
-      </select>
-    </td>
-  </tr>
-  <tr>
-    <td>租金（月）</td>
-    <td><input id="rent" value="80000"></td>
-  </tr>
-  <tr>
-    <td>押金</td>
-    <td><input id="deposit" value="80000"></td>
-  </tr>
-  <tr>
-    <td>租期（月）</td>
-    <td><input id="months" value="12"></td>
-  </tr>
-  <tr>
-    <td>起始日期</td>
-    <td><input id="start" value="2026-06-01"></td>
-  </tr>
-  <tr>
-    <td>支付方式</td>
-    <td>
-      <select id="payment">
-        <option>银行转账</option>
-        <option>现金</option>
-      </select>
-    </td>
-  </tr>
-  <tr>
-    <td>签订地点</td>
-    <td><input id="location" value="东京"></td>
-  </tr>
-</table>
+    <h2>智能识别输入</h2>
 
-<button onclick="generatePDF()">生成合同 PDF</button>
+    <div class="hint">示例，可直接复制：
 
+居住地址: 香港中环XX大厦101室
+入住日期: 2026 年 1 月 1 日
+退房日期: 2026 年 5 月 1 日
+签约日期: 2026 年 1 月 1 日
+每月租金: 5000
+姓名: 张三
+证件号码: A12345678</div>
+
+    <textarea id="rawInput" placeholder="请粘贴合同资料，例如：居住地址、入住日期、退房日期、签约日期、每月租金、姓名、证件号码等"></textarea>
+
+    <div class="button-row">
+      <button type="button" onclick="parseInput()">自动识别并填充</button>
+    </div>
+
+    <h2>基础信息</h2>
+
+    <table>
+      <tr>
+        <td>居住地址</td>
+        <td><input id="address" placeholder="例如：香港中环XX大厦101室" /></td>
+      </tr>
+      <tr>
+        <td>入住日期</td>
+        <td><input id="checkin" placeholder="例如：2026-01-01 或 2026 年 1 月 1 日" /></td>
+      </tr>
+      <tr>
+        <td>退房日期</td>
+        <td><input id="checkout" placeholder="例如：2026-05-01 或 2026 年 5 月 1 日" /></td>
+      </tr>
+      <tr>
+        <td>签约日期</td>
+        <td><input id="signDate" placeholder="例如：2026-01-01" /></td>
+      </tr>
+      <tr>
+        <td>每月租金</td>
+        <td><input id="rent" placeholder="例如：5000" /></td>
+      </tr>
+      <tr>
+        <td>姓名</td>
+        <td><input id="name" placeholder="例如：张三" /></td>
+      </tr>
+      <tr>
+        <td>证件号码</td>
+        <td><input id="idNumber" placeholder="例如：A12345678" /></td>
+      </tr>
+    </table>
+
+    <h2>自动计算信息</h2>
+
+    <table>
+      <tr>
+        <td>居住时期</td>
+        <td><input id="period" /></td>
+      </tr>
+      <tr>
+        <td>保证金</td>
+        <td><input id="deposit" /></td>
+      </tr>
+      <tr>
+        <td>保证金支付截止日期</td>
+        <td><input id="depositDeadline" /></td>
+      </tr>
+      <tr>
+        <td>第一期截止</td>
+        <td><input id="p1Date" /></td>
+      </tr>
+      <tr>
+        <td>第二期截止</td>
+        <td><input id="p2Date" /></td>
+      </tr>
+      <tr>
+        <td>第三期截止</td>
+        <td><input id="p3Date" /></td>
+      </tr>
+      <tr>
+        <td>第四期截止</td>
+        <td><input id="p4Date" /></td>
+      </tr>
+      <tr>
+        <td>第一期租金</td>
+        <td><input id="p1Rent" /></td>
+      </tr>
+      <tr>
+        <td>第二期租金</td>
+        <td><input id="p2Rent" /></td>
+      </tr>
+      <tr>
+        <td>第三期租金</td>
+        <td><input id="p3Rent" /></td>
+      </tr>
+      <tr>
+        <td>第四期租金</td>
+        <td><input id="p4Rent" /></td>
+      </tr>
+    </table>
+
+    <div class="button-row">
+      <button type="button" onclick="downloadPDF()">下载 PDF</button>
+    </div>
+
+    <div class="note">
+      点击“下载 PDF”后，会打开系统打印窗口。请选择“保存为 PDF”。
+      这个版本不使用 html2pdf 截图，因此不会出现下载 PDF 内容被截断、边缘错位或灰色边框线的问题。
+    </div>
+  </div>
 </body>
 </html>
