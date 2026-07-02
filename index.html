@@ -6,7 +6,9 @@
 
   <title>许可协议 PDF 生成器</title>
 
-  <script defer src="main.js?v=20260517-2"></script>
+  <script defer src="vendor/html2canvas.min.js"></script>
+  <script defer src="vendor/jspdf.umd.min.js"></script>
+  <script defer src="main.js?v=20260703-8"></script>
 
   <style>
     * {
@@ -37,10 +39,31 @@
     }
 
     h2 {
-      margin: 28px 0 12px;
-      font-size: 20px;
+      margin: 22px 0 10px;
+      font-size: 18px;
       border-left: 4px solid #111827;
       padding-left: 10px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 22px 0 10px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+    }
+
+    .example-toggle {
+      width: auto;
+      min-width: 72px;
+      padding: 8px 14px;
+      font-size: 14px;
+      background: #e5e7eb;
+      color: #111827;
     }
 
     p {
@@ -48,6 +71,7 @@
     }
 
     .hint {
+      display: none;
       background: #f9fafb;
       border: 1px dashed #9ca3af;
       padding: 14px;
@@ -58,15 +82,53 @@
       border-radius: 8px;
     }
 
+    .hint.is-open {
+      display: block;
+    }
+
     textarea {
       width: 100%;
-      min-height: 150px;
-      padding: 12px;
-      font-size: 15px;
-      line-height: 1.6;
+      min-height: 128px;
+      padding: 10px;
+      font-size: 14px;
+      line-height: 1.5;
       border: 1px solid #d1d5db;
       border-radius: 8px;
       resize: vertical;
+    }
+
+    .compact-table {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 12px;
+      margin-top: 8px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      align-items: center;
+      min-width: 0;
+      border: 1px solid #e5e7eb;
+      border-radius: 7px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .field-row label {
+      height: 100%;
+      padding: 8px 10px;
+      background: #f9fafb;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3;
+      display: flex;
+      align-items: center;
+    }
+
+    .field-row input {
+      border: none;
+      border-radius: 0;
     }
 
     table {
@@ -90,20 +152,32 @@
 
     input {
       width: 100%;
-      padding: 9px 10px;
-      font-size: 15px;
+      padding: 8px 9px;
+      font-size: 14px;
       border: 1px solid #d1d5db;
       border-radius: 6px;
     }
 
     .button-row {
-      margin-top: 16px;
+      margin-top: 12px;
+    }
+
+    .input-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .download-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
 
     button {
       width: 100%;
-      padding: 14px;
-      font-size: 17px;
+      padding: 12px;
+      font-size: 15px;
       font-weight: 700;
       border: none;
       border-radius: 8px;
@@ -114,6 +188,78 @@
 
     button:hover {
       opacity: 0.92;
+    }
+
+    .secondary-button {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.62;
+    }
+
+    .signature-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(17, 24, 39, 0.58);
+    }
+
+    .signature-modal.is-open {
+      display: flex;
+    }
+
+    .signature-dialog {
+      width: min(680px, 100%);
+      padding: 18px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+    }
+
+    .signature-dialog h2 {
+      margin-top: 0;
+    }
+
+    .signature-pad {
+      width: 100%;
+      height: 220px;
+      border: 1px solid #9ca3af;
+      border-radius: 8px;
+      background: #ffffff;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    .signature-error {
+      min-height: 22px;
+      margin: 8px 0 0;
+      color: #b91c1c;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .signature-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .signature-actions button {
+      padding: 12px;
+      font-size: 15px;
+    }
+
+    .signature-actions .secondary {
+      background: #e5e7eb;
+      color: #111827;
     }
 
     .note {
@@ -148,6 +294,34 @@
         width: 100%;
         border-bottom: none;
       }
+
+      .compact-table {
+        grid-template-columns: 1fr;
+      }
+
+      .field-row {
+        grid-template-columns: 108px minmax(0, 1fr);
+      }
+
+      .input-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .download-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .signature-dialog {
+        padding: 14px;
+      }
+
+      .signature-pad {
+        height: 190px;
+      }
+
+      .signature-actions {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -160,9 +334,12 @@
       输入资料后，系统会自动识别并填入表单，再生成合同 PDF。
     </p>
 
-    <h2>智能识别输入</h2>
+    <div class="section-heading">
+      <h2>智能识别输入</h2>
+      <button type="button" class="example-toggle" id="toggleExampleBtn" aria-expanded="false" aria-controls="exampleHint">示例</button>
+    </div>
 
-    <div class="hint">示例，可直接复制：
+    <div class="hint" id="exampleHint">示例，可直接复制：
 
 居住地址: 香港中环XX大厦101室
 入住日期: 2026 年 1 月 1 日
@@ -174,99 +351,89 @@
 
     <textarea id="rawInput" placeholder="请粘贴合同资料，例如：居住地址、入住日期、退房日期、签约日期、每月租金、姓名、证件号码等"></textarea>
 
-    <div class="button-row">
+    <div class="button-row input-actions">
+      <button type="button" class="secondary-button" id="fillTemplateBtn">点击直接编写模板</button>
       <button type="button" id="parseInputBtn">自动识别并填充</button>
     </div>
 
     <h2>基础信息</h2>
 
-    <table>
-      <tr>
-        <td>居住地址</td>
-        <td><input id="address" placeholder="例如：香港中环XX大厦101室" /></td>
-      </tr>
-      <tr>
-        <td>入住日期</td>
-        <td><input id="checkin" placeholder="例如：2026-01-01 或 2026 年 1 月 1 日" /></td>
-      </tr>
-      <tr>
-        <td>退房日期</td>
-        <td><input id="checkout" placeholder="例如：2026-05-01 或 2026 年 5 月 1 日" /></td>
-      </tr>
-      <tr>
-        <td>签约日期</td>
-        <td><input id="signDate" placeholder="例如：2026-01-01" /></td>
-      </tr>
-      <tr>
-        <td>每月租金</td>
-        <td><input id="rent" placeholder="例如：5000" /></td>
-      </tr>
-      <tr>
-        <td>姓名</td>
-        <td><input id="name" placeholder="例如：张三" /></td>
-      </tr>
-      <tr>
-        <td>证件号码</td>
-        <td><input id="idNumber" placeholder="例如：A12345678" /></td>
-      </tr>
-    </table>
+    <div class="compact-table">
+      <div class="field-row">
+        <label for="address">居住地址</label>
+        <input id="address" placeholder="例如：香港中环XX大厦101室" />
+      </div>
+      <div class="field-row">
+        <label for="checkin">入住日期</label>
+        <input id="checkin" placeholder="例如：2026-01-01 或 2026 年 1 月 1 日" />
+      </div>
+      <div class="field-row">
+        <label for="checkout">退房日期</label>
+        <input id="checkout" placeholder="例如：2026-05-01 或 2026 年 5 月 1 日" />
+      </div>
+      <div class="field-row">
+        <label for="signDate">签约日期</label>
+        <input id="signDate" placeholder="例如：2026-01-01" />
+      </div>
+      <div class="field-row">
+        <label for="rent">每月租金</label>
+        <input id="rent" placeholder="例如：5000" />
+      </div>
+      <div class="field-row">
+        <label for="name">姓名</label>
+        <input id="name" placeholder="例如：张三" />
+      </div>
+      <div class="field-row">
+        <label for="idNumber">证件号码</label>
+        <input id="idNumber" placeholder="例如：A12345678" />
+      </div>
+    </div>
 
     <h2>自动计算信息</h2>
 
-    <table>
-      <tr>
-        <td>居住时期</td>
-        <td><input id="period" /></td>
-      </tr>
-      <tr>
-        <td>保证金</td>
-        <td><input id="deposit" /></td>
-      </tr>
-      <tr>
-        <td>保证金支付截止日期</td>
-        <td><input id="depositDeadline" /></td>
-      </tr>
-      <tr>
-        <td>第一期截止</td>
-        <td><input id="p1Date" /></td>
-      </tr>
-      <tr>
-        <td>第二期截止</td>
-        <td><input id="p2Date" /></td>
-      </tr>
-      <tr>
-        <td>第三期截止</td>
-        <td><input id="p3Date" /></td>
-      </tr>
-      <tr>
-        <td>第四期截止</td>
-        <td><input id="p4Date" /></td>
-      </tr>
-      <tr>
-        <td>第一期租金</td>
-        <td><input id="p1Rent" /></td>
-      </tr>
-      <tr>
-        <td>第二期租金</td>
-        <td><input id="p2Rent" /></td>
-      </tr>
-      <tr>
-        <td>第三期租金</td>
-        <td><input id="p3Rent" /></td>
-      </tr>
-      <tr>
-        <td>第四期租金</td>
-        <td><input id="p4Rent" /></td>
-      </tr>
-    </table>
+    <div class="compact-table">
+      <div class="field-row">
+        <label for="period">居住时期</label>
+        <input id="period" />
+      </div>
+      <div class="field-row">
+        <label for="deposit">保证金</label>
+        <input id="deposit" />
+      </div>
+      <div class="field-row">
+        <label for="depositDeadline">保证金支付截止日期</label>
+        <input id="depositDeadline" />
+      </div>
+      <div class="field-row">
+        <label for="annualRentDeadline">年付租金截止日期</label>
+        <input id="annualRentDeadline" />
+      </div>
+      <div class="field-row">
+        <label for="annualRentTotal">年付租金总额</label>
+        <input id="annualRentTotal" />
+      </div>
+    </div>
 
-    <div class="button-row">
+    <div class="button-row download-actions">
+      <button type="button" class="secondary-button" id="downloadWordBtn">下载 Word</button>
       <button type="button" id="downloadPdfBtn">下载 PDF</button>
     </div>
 
     <div class="note">
-      点击“下载 PDF”后，会打开系统打印窗口。请选择“保存为 PDF”。
-      这个版本不使用 html2pdf 截图，因此不会出现下载 PDF 内容被截断、边缘错位或灰色边框线的问题。
+      点击“下载 Word”会直接下载 Word 文件；点击“下载 PDF”需要先完成客户签名。
+    </div>
+  </div>
+
+  <div class="signature-modal" id="signatureModal" aria-hidden="true">
+    <div class="signature-dialog" role="dialog" aria-modal="true" aria-labelledby="signatureTitle">
+      <h2 id="signatureTitle">客户签名</h2>
+      <canvas class="signature-pad" id="signatureCanvas"></canvas>
+      <div class="signature-error" id="signatureError"></div>
+      <div class="signature-actions">
+        <button type="button" class="secondary" id="clearSignatureBtn">清除</button>
+        <button type="button" class="secondary" id="cancelSignatureBtn">取消</button>
+        <button type="button" id="confirmSignatureBtn">确认并下载 PDF</button>
+      </div>
     </div>
   </div>
 </body>

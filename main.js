@@ -12,15 +12,19 @@
     "period",
     "deposit",
     "depositDeadline",
-    "p1Date",
-    "p2Date",
-    "p3Date",
-    "p4Date",
-    "p1Rent",
-    "p2Rent",
-    "p3Rent",
-    "p4Rent"
+    "annualRentDeadline",
+    "annualRentTotal"
   ];
+
+  const INPUT_TEMPLATE = [
+    "居住地址: 香港中环XX大厦101室",
+    "入住日期: 2026 年 1 月 1 日",
+    "退房日期: 2026 年 5 月 1 日",
+    "签约日期: 2026 年 1 月 1 日",
+    "每月租金: 5000",
+    "姓名: 张三",
+    "证件号码: A12345678"
+  ].join("\n");
 
   function $(id) {
     return document.getElementById(id);
@@ -231,6 +235,27 @@
     calculate();
   }
 
+  function fillInputTemplate() {
+    setValue("rawInput", INPUT_TEMPLATE);
+
+    const rawInput = $("rawInput");
+
+    if (rawInput) {
+      rawInput.focus();
+      rawInput.setSelectionRange(rawInput.value.length, rawInput.value.length);
+    }
+  }
+
+  function toggleExample() {
+    const hint = $("exampleHint");
+    const button = $("toggleExampleBtn");
+
+    if (!hint || !button) return;
+
+    const isOpen = hint.classList.toggle("is-open");
+    button.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  }
+
   function calculate() {
     const checkin = parseDate(getValue("checkin"));
     const checkout = parseDate(getValue("checkout"));
@@ -252,33 +277,15 @@
       return;
     }
 
+    const signDate = parseDate(getValue("signDate"));
     const months = getMonthDiff(getValue("checkin"), getValue("checkout"));
 
     setValue("period", `${formatChineseDate(checkin)} 至 ${formatChineseDate(checkout)}`);
 
     setValue("deposit", rent * 2);
-    setValue("depositDeadline", formatDate(addDays(checkin, -2)));
-
-    const installmentCount = 4;
-    const baseMonths = Math.floor(months / installmentCount);
-    const remainder = months % installmentCount;
-
-    const rents = [];
-
-    for (let i = 0; i < installmentCount; i++) {
-      const monthsForThisPeriod = baseMonths + (i < remainder ? 1 : 0);
-      rents.push(monthsForThisPeriod * rent);
-    }
-
-    setValue("p1Date", formatDate(checkin));
-    setValue("p2Date", formatDate(addMonths(checkin, Math.ceil(months / 4))));
-    setValue("p3Date", formatDate(addMonths(checkin, Math.ceil(months / 2))));
-    setValue("p4Date", formatDate(addMonths(checkin, Math.ceil((months * 3) / 4))));
-
-    setValue("p1Rent", rents[0] || "");
-    setValue("p2Rent", rents[1] || "");
-    setValue("p3Rent", rents[2] || "");
-    setValue("p4Rent", rents[3] || "");
+    setValue("depositDeadline", signDate ? formatDate(signDate) : "");
+    setValue("annualRentDeadline", signDate ? formatDate(addMonths(signDate, 1)) : "");
+    setValue("annualRentTotal", months * rent);
   }
 
   function validateBeforeGenerate() {
@@ -332,14 +339,8 @@
       "居住时期": form.period,
       "保证金": money(form.deposit),
       "保证金支付截止日期": formatChineseDate(form.depositDeadline),
-      "第一期截止": formatChineseDate(form.p1Date),
-      "第二期截止": formatChineseDate(form.p2Date),
-      "第三期截止": formatChineseDate(form.p3Date),
-      "第四期截止": formatChineseDate(form.p4Date),
-      "第一期租金": money(form.p1Rent),
-      "第二期租金": money(form.p2Rent),
-      "第三期租金": money(form.p3Rent),
-      "第四期租金": money(form.p4Rent),
+      "年付租金截止日期": formatChineseDate(form.annualRentDeadline),
+      "年付租金总额": money(form.annualRentTotal),
       "总居住月份": totalMonths,
       "总许可费用": money(totalFee)
     };
@@ -368,7 +369,7 @@
 <div class="contract">
   <h1>许可协议</h1>
 
-  <p>此合約由A1 Plus Global Limited及许可人（护照/身份证ID no. #证件号码#）於#签约日期#訂立。</p>
+  <p>此合約由A1 Plus Global Limited及许可人 #姓名#（护照/身份证ID no. #证件号码#）於#签约日期#訂立。</p>
 
   <div class="meta">
     <div class="meta-row">
@@ -401,7 +402,7 @@
 
   <div class="clause"><div class="clause-no">3.</div><div class="clause-text">许可人除將該许可居住地的物業作其個人使用於作息用途外，不可將該许可居住地的物業或其任何部分作商業或其他用途。</div></div>
 
-  <div class="clause"><div class="clause-no">4.</div><div class="clause-text">许可人須在#保证金支付截止日期#之前提前向A1 Plus Global Limited 支付许可保證金 #保证金# HKD（銀行轉帳，電子支付港幣）及许可人須於#第一期截止#前向A1 Plus Global Limited 支付房子租金 #第一期租金# HKD（銀行轉帳，電子支付港幣）。倘许可人於應繳總许可费用之日的2天內仍未清付該總许可费用，則A1 Plus Global Limited有權採取適當行動追討许可人所欠的總许可费用而由此而引起的一切合理的直接費用及開支將構成许可人所欠A1 Plus Global Limited的債項，A1 Plus Global Limited將有權向许可人一併追討所欠款項全數而無須退還许可人已支付押金和總许可费用。此合同為死約，如许可人提早結束许可使用期，所繳交的總许可费用或餘下的许可费用將不會退還。</div></div>
+  <div class="clause"><div class="clause-no">4.</div><div class="clause-text">许可人須在#签约日期#之前提前向A1 Plus Global Limited 支付许可保證金 #保证金# HKD（銀行轉帳，電子支付港幣）及许可人須於#年付租金截止日期#前向A1 Plus Global Limited 支付房子租金 #年付租金总额# HKD（銀行轉帳，電子支付港幣）。倘许可人於應繳總许可费用之日的2天內仍未清付該總许可费用，則A1 Plus Global Limited有權採取適當行動追討许可人所欠的總许可费用而由此而引起的一切合理的直接費用及開支將構成许可人所欠A1 Plus Global Limited的債項，A1 Plus Global Limited將有權向许可人一併追討所欠款項全數而無須退還许可人已支付押金和總许可费用。此合同為死約，如许可人提早結束许可使用期，所繳交的總许可费用或餘下的许可费用將不會退還。</div></div>
 
   <div class="clause"><div class="clause-no">5.</div><div class="clause-text">许可人須在许可协议期內保持许可居住地的物業內部的維修狀態良好（自然損耗及因固有的缺陷所產生的損壞除外）並須於此许可协议終止時將许可居住地的物業在同樣的維修狀態下交吉交回，否則A1 Plus Global Limited可在许可人保證金裡扣除相應的費用。在许可使用期间完结当日即#退房日期#，许可人需于中午十二点前迁出，以便安排清洁。在当日十二点后许可人遗留在许可居住地址物业的所有物件和财产，視作许可人遗弃的垃圾，A1 Plus Global Limited可以安排处置或丢掉，而不需要另行通知或赔偿许可人。如许可人遗留的垃圾过多，A1 Plus Global Limited有权向许可人收取费用或在许可保证金中扣除。</div></div>
 
@@ -446,29 +447,68 @@
   <div class="receipt">
     <p>
       A1 Plus Global Limited 收到许可人所交的许可保證金 #保证金# HKD；<br>
-      A1 Plus Global Limited 收到许可人所交的许可費用 #第一期租金# HKD；
+      A1 Plus Global Limited 收到许可人所交的许可費用 #年付租金总额# HKD；
     </p>
   </div>
 
+  #签名区#
+</div>
+`;
+  }
+
+  function getPdfSignatureTemplate() {
+    return `
   <table class="signature-table">
     <tr>
       <td>
-        A1 Plus Global Limited<br>
-        確認及接受這合約內所有條款的約束：
-        <span class="signature-line"></span>
+        <div class="signature-heading">
+          A1 Plus Global Limited<br>
+          確認及接受這合約內所有條款的約束：
+        </div>
+        <div class="signature-mark-area">
+          <span class="signature-line"></span>
+        </div>
         Name: A1 Plus Global Limited<br>
         BR: 78053188
       </td>
       <td>
-        许可人確認及接受協議內所有條款的約束：
-        <span class="signature-line"></span>
+        <div class="signature-heading">
+          许可人確認及接受協議內所有條款的約束：
+        </div>
+        <div class="signature-mark-area">
+          <img class="licensee-signature-image" src="#许可人签名图片#" alt="许可人签名">
+          <span class="signature-line"></span>
+        </div>
         Name: #姓名#<br>
         Passport / China ID: #证件号码#
       </td>
     </tr>
-  </table>
-</div>
-`;
+  </table>`;
+  }
+
+  function getWordSignatureTemplate() {
+    return `
+  <table class="word-signature-table">
+    <tr>
+      <td>
+        <div class="word-signature-heading">
+          A1 Plus Global Limited<br>
+          確認及接受這合約內所有條款的約束：
+        </div>
+        <div class="word-signature-line"></div>
+        Name: A1 Plus Global Limited<br>
+        BR: 78053188
+      </td>
+      <td>
+        <div class="word-signature-heading">
+          许可人確認及接受協議內所有條款的約束：
+        </div>
+        <div class="word-signature-line"></div>
+        Name: #姓名#<br>
+        Passport / China ID: #证件号码#
+      </td>
+    </tr>
+  </table>`;
   }
 
   function getPDFStyle() {
@@ -644,13 +684,71 @@
     padding: 0 0 0 7mm;
   }
 
-  .signature-line {
-    display: block;
+  .signature-heading {
+    min-height: 12mm;
+  }
+
+  .signature-mark-area {
+    position: relative;
+    width: 70mm;
+    height: 16mm;
     margin-top: 16mm;
     margin-bottom: 3mm;
+  }
+
+  .licensee-signature-image {
+    position: absolute;
+    left: 0;
+    bottom: 1.5mm;
+    width: 62mm;
+    height: 15mm;
+    object-fit: contain;
+    object-position: left bottom;
+  }
+
+  .signature-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
     border-bottom: 1px solid #000;
     height: 0;
+  }
+
+  .word-signature-table {
+    margin-top: 8mm;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    border: none !important;
+  }
+
+  .word-signature-table td {
+    width: 50%;
+    vertical-align: top;
+    padding: 0 7mm 0 0;
+    border: none !important;
+  }
+
+  .word-signature-table td + td {
+    padding: 0 0 0 7mm;
+    border: none !important;
+  }
+
+  .word-signature-heading {
+    min-height: 12mm;
+  }
+
+  .word-signature-line {
     width: 70mm;
+    height: 16mm;
+    margin-top: 16mm;
+    margin-bottom: 3mm;
+    border: none !important;
+    border-bottom: 1px solid #000 !important;
   }
 
   @media print {
@@ -695,12 +793,18 @@
 `;
   }
 
-  function buildContractHTML() {
+  function buildContractHTML(signatureDataUrl, options) {
     if (!validateBeforeGenerate()) {
       return null;
     }
 
+    const settings = options || {};
     const data = collectFormData();
+    data["许可人签名图片"] = signatureDataUrl || "";
+    data["签名区"] = renderTemplate(
+      settings.forWord ? getWordSignatureTemplate() : getPdfSignatureTemplate(),
+      data
+    );
     const contract = renderTemplate(getContractTemplate(), data);
 
     return `
@@ -719,52 +823,479 @@ ${contract}
 `;
   }
 
-  function openPrintWindow(html) {
-    const printWindow = window.open("", "_blank");
-
-    if (!printWindow) {
-      alert("浏览器阻止了弹出窗口，请允许弹出窗口后再点击下载 PDF。");
-      return;
+  function ensurePdfLibraries() {
+    if (typeof window.html2canvas !== "function") {
+      throw new Error("PDF 截图组件未加载，请刷新页面后重试。");
     }
 
-    printWindow.document.open();
-    printWindow.document.write(html);
-    printWindow.document.close();
-
-    const triggerPrint = function () {
-      setTimeout(function () {
-        printWindow.focus();
-        printWindow.print();
-      }, 500);
-    };
-
-    if (printWindow.document.readyState === "complete") {
-      triggerPrint();
-    } else {
-      printWindow.onload = triggerPrint;
+    if (!window.jspdf || typeof window.jspdf.jsPDF !== "function") {
+      throw new Error("PDF 生成组件未加载，请刷新页面后重试。");
     }
   }
 
-  function downloadPDF() {
+  let signaturePadInitialized = false;
+  let signaturePadHasInk = false;
+  let signaturePadResolve = null;
+
+  function getSignatureElements() {
+    return {
+      modal: $("signatureModal"),
+      canvas: $("signatureCanvas"),
+      error: $("signatureError"),
+      clearBtn: $("clearSignatureBtn"),
+      cancelBtn: $("cancelSignatureBtn"),
+      confirmBtn: $("confirmSignatureBtn")
+    };
+  }
+
+  function getSignatureContext(canvas) {
+    const ctx = canvas.getContext("2d");
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = 2.4;
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#000000";
+
+    return ctx;
+  }
+
+  function resizeSignatureCanvas() {
+    const { canvas } = getSignatureElements();
+
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    canvas.height = Math.max(1, Math.round(rect.height * dpr));
+
+    const ctx = getSignatureContext(canvas);
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    signaturePadHasInk = false;
+  }
+
+  function clearSignatureCanvas() {
+    const { canvas, error } = getSignatureElements();
+
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    signaturePadHasInk = false;
+
+    if (error) {
+      error.textContent = "";
+    }
+  }
+
+  function getCanvasPoint(canvas, event) {
+    const rect = canvas.getBoundingClientRect();
+
+    return {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
+    };
+  }
+
+  function initializeSignaturePad() {
+    const { canvas, clearBtn, cancelBtn, confirmBtn, modal, error } = getSignatureElements();
+
+    if (!canvas || !clearBtn || !cancelBtn || !confirmBtn || !modal || signaturePadInitialized) {
+      return;
+    }
+
+    let isDrawing = false;
+    let lastPoint = null;
+
+    const beginStroke = event => {
+      const ctx = getSignatureContext(canvas);
+      const point = getCanvasPoint(canvas, event);
+
+      isDrawing = true;
+      lastPoint = point;
+      signaturePadHasInk = true;
+
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 1.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      try {
+        canvas.setPointerCapture?.(event.pointerId);
+      } catch (err) {
+        // Some synthetic or browser-specific pointer events cannot be captured.
+      }
+
+      if (error) {
+        error.textContent = "";
+      }
+    };
+
+    const moveStroke = event => {
+      if (!isDrawing || !lastPoint) return;
+
+      const ctx = getSignatureContext(canvas);
+      const point = getCanvasPoint(canvas, event);
+
+      ctx.beginPath();
+      ctx.moveTo(lastPoint.x, lastPoint.y);
+      ctx.lineTo(point.x, point.y);
+      ctx.stroke();
+
+      lastPoint = point;
+    };
+
+    const endStroke = event => {
+      isDrawing = false;
+      lastPoint = null;
+      try {
+        canvas.releasePointerCapture?.(event.pointerId);
+      } catch (err) {
+        // Ignore release failures for pointer events that were not captured.
+      }
+    };
+
+    canvas.addEventListener("pointerdown", beginStroke);
+    canvas.addEventListener("pointermove", moveStroke);
+    canvas.addEventListener("pointerup", endStroke);
+    canvas.addEventListener("pointercancel", endStroke);
+    clearBtn.addEventListener("click", clearSignatureCanvas);
+    cancelBtn.addEventListener("click", () => closeSignatureDialog(null));
+    confirmBtn.addEventListener("click", () => {
+      if (!signaturePadHasInk) {
+        if (error) {
+          error.textContent = "请先在签名框内签名。";
+        }
+        return;
+      }
+
+      closeSignatureDialog(canvas.toDataURL("image/png"));
+    });
+    window.addEventListener("resize", () => {
+      if (modal.classList.contains("is-open")) {
+        resizeSignatureCanvas();
+      }
+    });
+
+    signaturePadInitialized = true;
+  }
+
+  function closeSignatureDialog(signatureDataUrl) {
+    const { modal } = getSignatureElements();
+
+    if (modal) {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    document.body.style.overflow = "";
+
+    if (signaturePadResolve) {
+      const resolve = signaturePadResolve;
+      signaturePadResolve = null;
+      resolve(signatureDataUrl);
+    }
+  }
+
+  function requestSignature() {
+    const { modal, canvas, error } = getSignatureElements();
+
+    if (!modal || !canvas) {
+      return Promise.reject(new Error("找不到签名弹窗。"));
+    }
+
+    initializeSignaturePad();
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+
+    if (error) {
+      error.textContent = "";
+    }
+
+    requestAnimationFrame(() => {
+      resizeSignatureCanvas();
+      canvas.focus?.();
+    });
+
+    return new Promise(resolve => {
+      signaturePadResolve = resolve;
+    });
+  }
+
+  function getPdfFilename() {
+    const name = getValue("name") || "contract";
+    const signDate = getValue("signDate") || formatDate(new Date());
+    const safeName = String(name).replace(/[\\/:*?"<>|]+/g, "-").trim() || "contract";
+
+    return `${safeName}-${signDate}-许可协议.pdf`;
+  }
+
+  function getWordFilename() {
+    const name = getValue("name") || "contract";
+    const signDate = getValue("signDate") || formatDate(new Date());
+    const safeName = String(name).replace(/[\\/:*?"<>|]+/g, "-").trim() || "contract";
+
+    return `${safeName}-${signDate}-许可协议.doc`;
+  }
+
+  function saveBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
+  }
+
+  function createRenderFrame(html) {
+    return new Promise((resolve, reject) => {
+      const frame = document.createElement("iframe");
+
+      frame.setAttribute("title", "PDF render frame");
+      frame.style.position = "fixed";
+      frame.style.left = "-10000px";
+      frame.style.top = "0";
+      frame.style.width = "794px";
+      frame.style.height = "1123px";
+      frame.style.border = "0";
+      frame.style.background = "#ffffff";
+
+      frame.onload = function () {
+        resolve(frame);
+      };
+
+      document.body.appendChild(frame);
+
+      try {
+        const doc = frame.contentDocument;
+
+        doc.open();
+        doc.write(html);
+        doc.close();
+      } catch (err) {
+        frame.remove();
+        reject(err);
+      }
+    });
+  }
+
+  async function waitForFrameReady(frame) {
+    const doc = frame.contentDocument;
+
+    if (doc && doc.fonts && typeof doc.fonts.ready?.then === "function") {
+      await doc.fonts.ready;
+    }
+
+    if (doc) {
+      const images = Array.from(doc.querySelectorAll("img"));
+
+      await Promise.all(images.map(image => {
+        if (image.complete) {
+          return Promise.resolve();
+        }
+
+        return new Promise(resolve => {
+          image.onload = resolve;
+          image.onerror = resolve;
+        });
+      }));
+    }
+
+    await new Promise(resolve => {
+      requestAnimationFrame(() => requestAnimationFrame(resolve));
+    });
+  }
+
+  async function renderContractCanvas(html) {
+    const frame = await createRenderFrame(html);
+
     try {
-      const html = buildContractHTML();
+      await waitForFrameReady(frame);
+
+      const contract = frame.contentDocument.querySelector(".contract");
+
+      if (!contract) {
+        throw new Error("找不到合同内容。");
+      }
+
+      return await window.html2canvas(contract, {
+        backgroundColor: "#ffffff",
+        scale: Math.min(2, window.devicePixelRatio || 2),
+        scrollX: 0,
+        scrollY: 0,
+        useCORS: true,
+        windowWidth: 794
+      });
+    } finally {
+      frame.remove();
+    }
+  }
+
+  function canvasToPdf(canvas) {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: "a4"
+    });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 34;
+    const contentWidth = pageWidth - margin * 2;
+    const contentHeight = pageHeight - margin * 2;
+    const pxPerPt = canvas.width / contentWidth;
+    const pageCanvasHeight = Math.floor(contentHeight * pxPerPt);
+    let sourceY = 0;
+    let pageIndex = 0;
+
+    while (sourceY < canvas.height) {
+      const sliceHeight = Math.min(pageCanvasHeight, canvas.height - sourceY);
+      const pageCanvas = document.createElement("canvas");
+      const pageContext = pageCanvas.getContext("2d");
+
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = sliceHeight;
+      pageContext.fillStyle = "#ffffff";
+      pageContext.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+      pageContext.drawImage(
+        canvas,
+        0,
+        sourceY,
+        canvas.width,
+        sliceHeight,
+        0,
+        0,
+        canvas.width,
+        sliceHeight
+      );
+
+      if (pageIndex > 0) {
+        pdf.addPage();
+      }
+
+      const imageHeight = sliceHeight / pxPerPt;
+      const imageData = pageCanvas.toDataURL("image/jpeg", 0.96);
+
+      pdf.addImage(imageData, "JPEG", margin, margin, contentWidth, imageHeight);
+
+      sourceY += sliceHeight;
+      pageIndex += 1;
+    }
+
+    return pdf;
+  }
+
+  async function downloadPDF() {
+    const downloadPdfBtn = $("downloadPdfBtn");
+    const originalText = downloadPdfBtn ? downloadPdfBtn.textContent : "";
+
+    try {
+      ensurePdfLibraries();
+
+      if (!validateBeforeGenerate()) {
+        return;
+      }
+
+      const signatureDataUrl = await requestSignature();
+
+      if (!signatureDataUrl) {
+        return;
+      }
+
+      const html = buildContractHTML(signatureDataUrl);
 
       if (!html) {
         return;
       }
 
-      openPrintWindow(html);
+      if (downloadPdfBtn) {
+        downloadPdfBtn.disabled = true;
+        downloadPdfBtn.textContent = "正在生成 PDF...";
+      }
+
+      const canvas = await renderContractCanvas(html);
+      const pdf = canvasToPdf(canvas);
+
+      pdf.save(getPdfFilename());
     } catch (err) {
       console.error(err);
       alert("下载 PDF 失败：" + err.message);
+    } finally {
+      if (downloadPdfBtn) {
+        downloadPdfBtn.disabled = false;
+        downloadPdfBtn.textContent = originalText || "下载 PDF";
+      }
+    }
+  }
+
+  function downloadWord() {
+    const downloadWordBtn = $("downloadWordBtn");
+    const originalText = downloadWordBtn ? downloadWordBtn.textContent : "";
+
+    try {
+      const html = buildContractHTML("", { forWord: true });
+
+      if (!html) {
+        return;
+      }
+
+      if (downloadWordBtn) {
+        downloadWordBtn.disabled = true;
+        downloadWordBtn.textContent = "正在生成 Word...";
+      }
+
+      const blob = new Blob(["\ufeff", html], {
+        type: "application/msword;charset=utf-8"
+      });
+
+      saveBlob(blob, getWordFilename());
+    } catch (err) {
+      console.error(err);
+      alert("下载 Word 失败：" + err.message);
+    } finally {
+      if (downloadWordBtn) {
+        downloadWordBtn.disabled = false;
+        downloadWordBtn.textContent = originalText || "下载 Word";
+      }
     }
   }
 
   window.parseInput = parseInput;
   window.calculate = calculate;
   window.downloadPDF = downloadPDF;
+  window.downloadWord = downloadWord;
+  window.fillInputTemplate = fillInputTemplate;
+  window.toggleExample = toggleExample;
 
   document.addEventListener("DOMContentLoaded", function () {
+    const toggleExampleBtn = document.getElementById("toggleExampleBtn");
+
+    if (toggleExampleBtn) {
+      toggleExampleBtn.addEventListener("click", function () {
+        toggleExample();
+      });
+    }
+
+    const fillTemplateBtn = document.getElementById("fillTemplateBtn");
+
+    if (fillTemplateBtn) {
+      fillTemplateBtn.addEventListener("click", function () {
+        fillInputTemplate();
+      });
+    }
+
     const parseInputBtn = document.getElementById("parseInputBtn");
 
     if (parseInputBtn) {
@@ -778,6 +1309,14 @@ ${contract}
     if (downloadPdfBtn) {
       downloadPdfBtn.addEventListener("click", function () {
         downloadPDF();
+      });
+    }
+
+    const downloadWordBtn = document.getElementById("downloadWordBtn");
+
+    if (downloadWordBtn) {
+      downloadWordBtn.addEventListener("click", function () {
+        downloadWord();
       });
     }
 
