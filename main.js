@@ -47,20 +47,21 @@
     // Adjust only this block when tuning phone or WeChat PDF density.
     mobile: {
       name: "mobile",
-      pagePadding: "14px 8px 18px 8px",
-      bodyFontSize: "8.8pt",
-      bodyLineHeight: "1.34",
+      pagePadding: "10px 10px 14px 10px",
+      bodyFontSize: "9.2pt",
+      bodyLineHeight: "1.42",
       titleFontSize: "16pt",
       titleMargin: "0 0 4mm 0",
       paragraphMargin: "0 0 2.2mm 0",
       metaMargin: "3mm 0 3.5mm 0",
       introMargin: "0 0 2.6mm 0",
+      layoutWidth: 420,
       clauseMargin: "0 0 1.8mm 0",
-      clauseNoWidth: "6mm",
-      clauseTextMargin: "7mm",
+      clauseNoWidth: "7mm",
+      clauseTextMargin: "6mm",
       clauseFragmentGap: "0mm",
       finalClauseFragmentGap: "0.5mm",
-      maxChunkLength: 44
+      maxChunkLength: 38
     }
   };
 
@@ -630,8 +631,9 @@
   }
 
   .pdf-page {
-    width: 794px;
-    height: 1123px;
+    width: ${preset.layoutWidth || 794}px;
+    height: auto;
+    min-height: 1123px;
     margin: 0;
     padding: ${settings.pagePadding};
     background: #ffffff;
