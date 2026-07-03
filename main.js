@@ -570,6 +570,34 @@
     outline: none !important;
   }
 
+  .pdf-pages {
+    width: 794px;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .pdf-page {
+    width: 794px;
+    height: 1123px;
+    margin: 0;
+    padding: 45px 45px 52px 45px;
+    background: #ffffff;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .pdf-page-content {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .pdf-page .signature-table {
+    margin-top: 6mm;
+  }
+
   h1 {
     margin: 0 0 7mm 0;
     padding: 0;
@@ -833,6 +861,12 @@ ${contract}
     }
   }
 
+  function ensureWordLibrary() {
+    if (!window.docx || typeof window.docx.Document !== "function" || !window.docx.Packer) {
+      throw new Error("Word 生成组件未加载，请刷新页面后重试。");
+    }
+  }
+
   let signaturePadInitialized = false;
   let signaturePadHasInk = false;
   let signaturePadResolve = null;
@@ -1040,7 +1074,7 @@ ${contract}
     const signDate = getValue("signDate") || formatDate(new Date());
     const safeName = String(name).replace(/[\\/:*?"<>|]+/g, "-").trim() || "contract";
 
-    return `${safeName}-${signDate}-许可协议.doc`;
+    return `${safeName}-${signDate}-许可协议.docx`;
   }
 
   function saveBlob(blob, filename) {
@@ -1117,84 +1151,338 @@ ${contract}
     });
   }
 
-  async function renderContractCanvas(html) {
+  function createPdfPage(doc) {
+    const page = doc.createElement("div");
+    const content = doc.createElement("div");
+
+    page.className = "pdf-page";
+    content.className = "pdf-page-content";
+    page.appendChild(content);
+
+    return { page, content };
+  }
+
+  function paginateContract(frame) {
+    const doc = frame.contentDocument;
+    const contract = doc.querySelector(".contract");
+
+    if (!contract) {
+      throw new Error("找不到合同内容。");
+    }
+
+    const sourceBlocks = Array.from(contract.children).map(child => child.cloneNode(true));
+    const pages = doc.createElement("div");
+    let current = createPdfPage(doc);
+
+    pages.className = "pdf-pages";
+    pages.appendChild(current.page);
+    contract.textContent = "";
+    contract.appendChild(pages);
+
+    sourceBlocks.forEach(block => {
+      current.content.appendChild(block);
+
+      if (current.content.scrollHeight > current.content.clientHeight + 1) {
+        current.content.removeChild(block);
+        current = createPdfPage(doc);
+        pages.appendChild(current.page);
+        current.content.appendChild(block);
+      }
+    });
+
+    return Array.from(pages.querySelectorAll(".pdf-page"));
+  }
+
+  async function renderPagedPdf(html) {
     const frame = await createRenderFrame(html);
 
     try {
       await waitForFrameReady(frame);
 
-      const contract = frame.contentDocument.querySelector(".contract");
+      const pages = paginateContract(frame);
 
-      if (!contract) {
-        throw new Error("找不到合同内容。");
+      if (!pages.length) {
+        throw new Error("找不到可生成的 PDF 页面。");
       }
 
-      return await window.html2canvas(contract, {
-        backgroundColor: "#ffffff",
-        scale: Math.min(2, window.devicePixelRatio || 2),
-        scrollX: 0,
-        scrollY: 0,
-        useCORS: true,
-        windowWidth: 794
+      await waitForFrameReady(frame);
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: "a4"
       });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const scale = Math.min(2, window.devicePixelRatio || 2);
+
+      for (let index = 0; index < pages.length; index += 1) {
+        const canvas = await window.html2canvas(pages[index], {
+          backgroundColor: "#ffffff",
+          scale,
+          scrollX: 0,
+          scrollY: 0,
+          useCORS: true,
+          windowWidth: 794,
+          width: 794,
+          height: 1123
+        });
+
+        if (index > 0) {
+          pdf.addPage();
+        }
+
+        pdf.addImage(canvas.toDataURL("image/jpeg", 0.96), "JPEG", 0, 0, pageWidth, pageHeight);
+      }
+
+      return pdf;
     } finally {
       frame.remove();
     }
   }
 
-  function canvasToPdf(canvas) {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "pt",
-      format: "a4"
+  function createDocxTextRun(text, options) {
+    const d = window.docx;
+    const settings = options || {};
+
+    return new d.TextRun({
+      text: String(text || ""),
+      bold: !!settings.bold,
+      size: settings.size || 21,
+      font: "Arial"
     });
+  }
 
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 34;
-    const contentWidth = pageWidth - margin * 2;
-    const contentHeight = pageHeight - margin * 2;
-    const pxPerPt = canvas.width / contentWidth;
-    const pageCanvasHeight = Math.floor(contentHeight * pxPerPt);
-    let sourceY = 0;
-    let pageIndex = 0;
+  function createDocxParagraph(text, options) {
+    const d = window.docx;
+    const settings = options || {};
 
-    while (sourceY < canvas.height) {
-      const sliceHeight = Math.min(pageCanvasHeight, canvas.height - sourceY);
-      const pageCanvas = document.createElement("canvas");
-      const pageContext = pageCanvas.getContext("2d");
+    return new d.Paragraph({
+      alignment: settings.alignment,
+      spacing: {
+        before: settings.before || 0,
+        after: settings.after == null ? 120 : settings.after
+      },
+      indent: settings.indent,
+      border: settings.border,
+      children: [
+        createDocxTextRun(text, {
+          bold: settings.bold,
+          size: settings.size
+        })
+      ]
+    });
+  }
 
-      pageCanvas.width = canvas.width;
-      pageCanvas.height = sliceHeight;
-      pageContext.fillStyle = "#ffffff";
-      pageContext.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-      pageContext.drawImage(
-        canvas,
-        0,
-        sourceY,
-        canvas.width,
-        sliceHeight,
-        0,
-        0,
-        canvas.width,
-        sliceHeight
-      );
+  function createDocxClauseParagraph(number, text) {
+    const d = window.docx;
 
-      if (pageIndex > 0) {
-        pdf.addPage();
+    return new d.Paragraph({
+      alignment: d.AlignmentType.BOTH,
+      spacing: { after: 120 },
+      indent: { left: 360, hanging: 360 },
+      children: [
+        createDocxTextRun(`${number} `, { bold: true }),
+        createDocxTextRun(text)
+      ]
+    });
+  }
+
+  function getRenderedContractDocument(data) {
+    const html = renderTemplate(
+      getContractTemplate(),
+      Object.assign({}, data, {
+        "签名区": "",
+        "许可人签名图片": ""
+      })
+    );
+    const parser = new DOMParser();
+
+    return parser.parseFromString(html, "text/html");
+  }
+
+  function extractDocxText(element) {
+    return String(element ? element.textContent || "" : "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function extractDocxLines(element) {
+    if (!element) return [];
+
+    const lines = [""];
+
+    function walk(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        lines[lines.length - 1] += node.textContent || "";
+        return;
       }
 
-      const imageHeight = sliceHeight / pxPerPt;
-      const imageData = pageCanvas.toDataURL("image/jpeg", 0.96);
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        return;
+      }
 
-      pdf.addImage(imageData, "JPEG", margin, margin, contentWidth, imageHeight);
+      if (node.tagName === "BR") {
+        lines.push("");
+        return;
+      }
 
-      sourceY += sliceHeight;
-      pageIndex += 1;
+      Array.from(node.childNodes).forEach(walk);
     }
 
-    return pdf;
+    walk(element);
+
+    return lines
+      .map(line => line.replace(/\s+/g, " ").trim())
+      .filter(Boolean);
+  }
+
+  function getDocxBorderlessTableBorders() {
+    const d = window.docx;
+    const none = {
+      style: d.BorderStyle.NONE,
+      size: 0,
+      color: "FFFFFF"
+    };
+
+    return {
+      top: none,
+      bottom: none,
+      left: none,
+      right: none,
+      insideHorizontal: none,
+      insideVertical: none
+    };
+  }
+
+  function createDocxCell(children) {
+    const d = window.docx;
+
+    return new d.TableCell({
+      width: { size: 50, type: d.WidthType.PERCENTAGE },
+      verticalAlign: d.VerticalAlign.TOP,
+      margins: {
+        top: 0,
+        bottom: 0,
+        left: 80,
+        right: 260
+      },
+      borders: getDocxBorderlessTableBorders(),
+      children
+    });
+  }
+
+  function createDocxSignatureTable(data) {
+    const d = window.docx;
+    const lineBorder = {
+      bottom: {
+        style: d.BorderStyle.SINGLE,
+        size: 6,
+        color: "000000"
+      }
+    };
+    const signatureLine = () => createDocxParagraph("", {
+      before: 700,
+      after: 140,
+      border: lineBorder
+    });
+
+    return new d.Table({
+      width: { size: 100, type: d.WidthType.PERCENTAGE },
+      layout: d.TableLayoutType.FIXED,
+      borders: getDocxBorderlessTableBorders(),
+      rows: [
+        new d.TableRow({
+          children: [
+            createDocxCell([
+              createDocxParagraph("A1 Plus Global Limited", { bold: true, after: 20 }),
+              createDocxParagraph("確認及接受這合約內所有條款的約束：", { after: 0 }),
+              signatureLine(),
+              createDocxParagraph("Name: A1 Plus Global Limited", { after: 40 }),
+              createDocxParagraph("BR: 78053188", { after: 0 })
+            ]),
+            createDocxCell([
+              createDocxParagraph("许可人確認及接受協議內所有條款的約束：", { after: 20 }),
+              createDocxParagraph("", { after: 0 }),
+              signatureLine(),
+              createDocxParagraph(`Name: ${data["姓名"]}`, { after: 40 }),
+              createDocxParagraph(`Passport / China ID: ${data["证件号码"]}`, { after: 0 })
+            ])
+          ]
+        })
+      ]
+    });
+  }
+
+  function buildWordDocument() {
+    const d = window.docx;
+    const data = collectFormData();
+    const contractDoc = getRenderedContractDocument(data);
+    const children = [
+      createDocxParagraph("许可协议", {
+        alignment: d.AlignmentType.CENTER,
+        bold: true,
+        size: 36,
+        after: 340
+      }),
+      createDocxParagraph(
+        `此合約由A1 Plus Global Limited及许可人 ${data["姓名"]}（护照/身份证ID no. ${data["证件号码"]}）於${data["签约日期"]}訂立。`,
+        { after: 180 }
+      ),
+      createDocxParagraph(`许可居住地址：${data["居住地址"]}`, { bold: true, after: 80 }),
+      createDocxParagraph(`许可使用期間：${data["居住时期"]}`, { bold: true, after: 80 }),
+      createDocxParagraph(`许可每月费用：${data["每月租金"]} HKD`, { bold: true, after: 80 }),
+      createDocxParagraph(`许可保證金：${data["保证金"]} HKD`, { bold: true, after: 80 }),
+      createDocxParagraph(`總许可费用：${data["总许可费用"]} HKD`, { bold: true, after: 180 }),
+      createDocxParagraph(extractDocxText(contractDoc.querySelector(".intro")), {
+        bold: true,
+        after: 160
+      })
+    ];
+
+    Array.from(contractDoc.querySelectorAll(".clause")).forEach(clause => {
+      children.push(createDocxClauseParagraph(
+        extractDocxText(clause.querySelector(".clause-no")),
+        extractDocxText(clause.querySelector(".clause-text"))
+      ));
+    });
+
+    children.push(createDocxParagraph("", { after: 80 }));
+
+    extractDocxLines(contractDoc.querySelector(".bank-info p")).forEach((line, index) => {
+      children.push(createDocxParagraph(line, {
+        bold: index === 0,
+        after: 60
+      }));
+    });
+
+    children.push(createDocxParagraph("", { after: 80 }));
+
+    extractDocxLines(contractDoc.querySelector(".receipt p")).forEach(line => {
+      children.push(createDocxParagraph(line, { after: 60 }));
+    });
+
+    children.push(createDocxSignatureTable(data));
+
+    return new d.Document({
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: 720,
+                right: 720,
+                bottom: 720,
+                left: 720
+              }
+            }
+          },
+          children
+        }
+      ]
+    });
   }
 
   async function downloadPDF() {
@@ -1225,8 +1513,7 @@ ${contract}
         downloadPdfBtn.textContent = "正在生成 PDF...";
       }
 
-      const canvas = await renderContractCanvas(html);
-      const pdf = canvasToPdf(canvas);
+      const pdf = await renderPagedPdf(html);
 
       pdf.save(getPdfFilename());
     } catch (err) {
@@ -1240,14 +1527,14 @@ ${contract}
     }
   }
 
-  function downloadWord() {
+  async function downloadWord() {
     const downloadWordBtn = $("downloadWordBtn");
     const originalText = downloadWordBtn ? downloadWordBtn.textContent : "";
 
     try {
-      const html = buildContractHTML("", { forWord: true });
+      ensureWordLibrary();
 
-      if (!html) {
+      if (!validateBeforeGenerate()) {
         return;
       }
 
@@ -1256,8 +1543,10 @@ ${contract}
         downloadWordBtn.textContent = "正在生成 Word...";
       }
 
-      const blob = new Blob(["\ufeff", html], {
-        type: "application/msword;charset=utf-8"
+      const doc = buildWordDocument();
+      const generatedBlob = await window.docx.Packer.toBlob(doc);
+      const blob = new Blob([generatedBlob], {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       });
 
       saveBlob(blob, getWordFilename());
