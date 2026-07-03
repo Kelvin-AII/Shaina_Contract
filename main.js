@@ -1172,7 +1172,7 @@ ${contract}
 
   function splitClauseText(text) {
     const cleanText = String(text || "").replace(/\s+/g, " ").trim();
-    const maxChunkLength = 58;
+    const maxChunkLength = 32;
     const sentences = cleanText.match(/[^。！？；;]+[。！？；;]?/g) || [cleanText];
     const chunks = [];
     let current = "";
