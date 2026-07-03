@@ -29,6 +29,8 @@
   const PDF_RENDER_PRESETS = {
     desktop: {
       name: "desktop",
+      layoutWidth: 794,
+      layoutHeight: 1123,
       pagePadding: "38px 42px 42px 42px",
       bodyFontSize: "10.5pt",
       bodyLineHeight: "1.55",
@@ -64,6 +66,14 @@
       maxChunkLength: 38
     }
   };
+
+  function getPdfPageDimensions(preset) {
+    const settings = preset || PDF_RENDER_PRESETS.desktop;
+    const width = Number(settings.layoutWidth) || 794;
+    const height = Number(settings.layoutHeight) || Math.round(width * 1123 / 794);
+
+    return { width, height };
+  }
 
   function $(id) {
     return document.getElementById(id);
@@ -564,6 +574,7 @@
 
   function getPDFStyle(preset) {
     const settings = preset || PDF_RENDER_PRESETS.desktop;
+    const dimensions = getPdfPageDimensions(settings);
 
     return `
 <style>
@@ -624,16 +635,15 @@
   }
 
   .pdf-pages {
-    width: 794px;
+    width: ${dimensions.width}px;
     margin: 0;
     padding: 0;
     background: #ffffff;
   }
 
   .pdf-page {
-    width: ${preset.layoutWidth || 794}px;
-    height: auto;
-    min-height: 1123px;
+    width: ${dimensions.width}px;
+    height: ${dimensions.height}px;
     margin: 0;
     padding: ${settings.pagePadding};
     background: #ffffff;
@@ -1163,16 +1173,17 @@ ${contract}
     }, 1000);
   }
 
-  function createRenderFrame(html) {
+  function createRenderFrame(html, preset) {
     return new Promise((resolve, reject) => {
       const frame = document.createElement("iframe");
+      const dimensions = getPdfPageDimensions(preset);
 
       frame.setAttribute("title", "PDF render frame");
       frame.style.position = "fixed";
       frame.style.left = "-10000px";
       frame.style.top = "0";
-      frame.style.width = "794px";
-      frame.style.height = "1123px";
+      frame.style.width = `${dimensions.width}px`;
+      frame.style.height = `${dimensions.height}px`;
       frame.style.border = "0";
       frame.style.background = "#ffffff";
 
@@ -1362,7 +1373,7 @@ ${contract}
   }
 
   async function renderPagedPdf(html, preset) {
-    const frame = await createRenderFrame(html);
+    const frame = await createRenderFrame(html, preset);
 
     try {
       await waitForFrameReady(frame);
@@ -1385,6 +1396,7 @@ ${contract}
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       const scale = Math.min(2, window.devicePixelRatio || 2);
+      const dimensions = getPdfPageDimensions(preset);
 
       for (let index = 0; index < pages.length; index += 1) {
         const canvas = await window.html2canvas(pages[index], {
@@ -1393,9 +1405,9 @@ ${contract}
           scrollX: 0,
           scrollY: 0,
           useCORS: true,
-          windowWidth: 794,
-          width: 794,
-          height: 1123
+          windowWidth: dimensions.width,
+          width: dimensions.width,
+          height: dimensions.height
         });
 
         if (index > 0) {
