@@ -26,6 +26,24 @@
     "证件号码: A12345678"
   ].join("\n");
 
+  const PDF_RENDER_PRESETS = {
+    desktop: {
+      name: "desktop",
+      pagePadding: "38px 42px 42px 42px",
+      clauseFragmentGap: "0.8mm",
+      finalClauseFragmentGap: "2.4mm",
+      maxChunkLength: 58
+    },
+    // Adjust only this block when tuning phone or WeChat PDF density.
+    mobile: {
+      name: "mobile",
+      pagePadding: "28px 34px 34px 34px",
+      clauseFragmentGap: "0.3mm",
+      finalClauseFragmentGap: "1.2mm",
+      maxChunkLength: 32
+    }
+  };
+
   function $(id) {
     return document.getElementById(id);
   }
@@ -364,6 +382,18 @@
     return html;
   }
 
+  function isMobilePdfMode() {
+    const userAgent = String(navigator.userAgent || "");
+    const isMobileUserAgent = /MicroMessenger|Android|iPhone|iPad|iPod|Mobile/i.test(userAgent);
+    const isDesktopModeIPad = /Macintosh/i.test(userAgent) && Number(navigator.maxTouchPoints || 0) > 1;
+
+    return isMobileUserAgent || isDesktopModeIPad;
+  }
+
+  function getPdfRenderPreset() {
+    return isMobilePdfMode() ? PDF_RENDER_PRESETS.mobile : PDF_RENDER_PRESETS.desktop;
+  }
+
   function getContractTemplate() {
     return `
 <div class="contract">
@@ -511,7 +541,9 @@
   </table>`;
   }
 
-  function getPDFStyle() {
+  function getPDFStyle(preset) {
+    const settings = preset || PDF_RENDER_PRESETS.desktop;
+
     return `
 <style>
   @page {
@@ -581,7 +613,7 @@
     width: 794px;
     height: 1123px;
     margin: 0;
-    padding: 28px 34px 34px 34px;
+    padding: ${settings.pagePadding};
     background: #ffffff;
     overflow: hidden;
     page-break-after: always;
@@ -659,11 +691,11 @@
   }
 
   .clause.clause-fragment {
-    margin-bottom: 0.3mm;
+    margin-bottom: ${settings.clauseFragmentGap};
   }
 
   .clause.clause-fragment.is-final-fragment {
-    margin-bottom: 1.2mm;
+    margin-bottom: ${settings.finalClauseFragmentGap};
   }
 
   .clause::after {
@@ -842,6 +874,7 @@
       data
     );
     const contract = renderTemplate(getContractTemplate(), data);
+    const pdfPreset = settings.pdfPreset || getPdfRenderPreset();
 
     return `
 <!doctype html>
@@ -850,7 +883,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>许可协议</title>
-${getPDFStyle()}
+${getPDFStyle(pdfPreset)}
 </head>
 <body>
 ${contract}
@@ -1170,9 +1203,10 @@ ${contract}
     return { page, content };
   }
 
-  function splitClauseText(text) {
+  function splitClauseText(text, preset) {
+    const settings = preset || PDF_RENDER_PRESETS.desktop;
     const cleanText = String(text || "").replace(/\s+/g, " ").trim();
-    const maxChunkLength = 32;
+    const maxChunkLength = settings.maxChunkLength;
     const sentences = cleanText.match(/[^。！？；;]+[。！？；;]?/g) || [cleanText];
     const chunks = [];
     let current = "";
@@ -1238,7 +1272,7 @@ ${contract}
     return clause;
   }
 
-  function createPdfFlowBlocks(doc, sourceBlocks) {
+  function createPdfFlowBlocks(doc, sourceBlocks, preset) {
     const blocks = [];
 
     sourceBlocks.forEach(block => {
@@ -1249,7 +1283,7 @@ ${contract}
 
       const number = String(block.querySelector(".clause-no")?.textContent || "").trim();
       const text = String(block.querySelector(".clause-text")?.textContent || "").trim();
-      const chunks = splitClauseText(text);
+      const chunks = splitClauseText(text, preset);
 
       chunks.forEach((chunk, index) => {
         blocks.push(createClauseFragment(
@@ -1265,7 +1299,7 @@ ${contract}
     return blocks;
   }
 
-  function paginateContract(frame) {
+  function paginateContract(frame, preset) {
     const doc = frame.contentDocument;
     const contract = doc.querySelector(".contract");
 
@@ -1274,7 +1308,7 @@ ${contract}
     }
 
     const sourceBlocks = Array.from(contract.children).map(child => child.cloneNode(true));
-    const flowBlocks = createPdfFlowBlocks(doc, sourceBlocks);
+    const flowBlocks = createPdfFlowBlocks(doc, sourceBlocks, preset);
     const pages = doc.createElement("div");
     let current = createPdfPage(doc);
 
@@ -1297,13 +1331,13 @@ ${contract}
     return Array.from(pages.querySelectorAll(".pdf-page"));
   }
 
-  async function renderPagedPdf(html) {
+  async function renderPagedPdf(html, preset) {
     const frame = await createRenderFrame(html);
 
     try {
       await waitForFrameReady(frame);
 
-      const pages = paginateContract(frame);
+      const pages = paginateContract(frame, preset);
 
       if (!pages.length) {
         throw new Error("找不到可生成的 PDF 页面。");
@@ -1606,7 +1640,8 @@ ${contract}
         return;
       }
 
-      const html = buildContractHTML(signatureDataUrl);
+      const pdfPreset = getPdfRenderPreset();
+      const html = buildContractHTML(signatureDataUrl, { pdfPreset });
 
       if (!html) {
         return;
@@ -1617,7 +1652,7 @@ ${contract}
         downloadPdfBtn.textContent = "正在生成 PDF...";
       }
 
-      const pdf = await renderPagedPdf(html);
+      const pdf = await renderPagedPdf(html, pdfPreset);
 
       pdf.save(getPdfFilename());
     } catch (err) {
