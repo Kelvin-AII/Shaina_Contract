@@ -581,7 +581,7 @@
     width: 794px;
     height: 1123px;
     margin: 0;
-    padding: 38px 42px 42px 42px;
+    padding: 28px 34px 34px 34px;
     background: #ffffff;
     overflow: hidden;
     page-break-after: always;
@@ -659,11 +659,11 @@
   }
 
   .clause.clause-fragment {
-    margin-bottom: 0.8mm;
+    margin-bottom: 0.3mm;
   }
 
   .clause.clause-fragment.is-final-fragment {
-    margin-bottom: 2.4mm;
+    margin-bottom: 1.2mm;
   }
 
   .clause::after {
