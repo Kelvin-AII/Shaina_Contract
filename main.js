@@ -30,6 +30,16 @@
     desktop: {
       name: "desktop",
       pagePadding: "38px 42px 42px 42px",
+      bodyFontSize: "10.5pt",
+      bodyLineHeight: "1.55",
+      titleFontSize: "18pt",
+      titleMargin: "0 0 7mm 0",
+      paragraphMargin: "0 0 3.4mm 0",
+      metaMargin: "5mm 0 6mm 0",
+      introMargin: "0 0 4.2mm 0",
+      clauseMargin: "0 0 3mm 0",
+      clauseNoWidth: "8mm",
+      clauseTextMargin: "9.5mm",
       clauseFragmentGap: "0.8mm",
       finalClauseFragmentGap: "2.4mm",
       maxChunkLength: 58
@@ -37,10 +47,20 @@
     // Adjust only this block when tuning phone or WeChat PDF density.
     mobile: {
       name: "mobile",
-      pagePadding: "28px 34px 34px 34px",
-      clauseFragmentGap: "0.3mm",
-      finalClauseFragmentGap: "1.2mm",
-      maxChunkLength: 32
+      pagePadding: "14px 8px 18px 8px",
+      bodyFontSize: "8.8pt",
+      bodyLineHeight: "1.34",
+      titleFontSize: "16pt",
+      titleMargin: "0 0 4mm 0",
+      paragraphMargin: "0 0 2.2mm 0",
+      metaMargin: "3mm 0 3.5mm 0",
+      introMargin: "0 0 2.6mm 0",
+      clauseMargin: "0 0 1.8mm 0",
+      clauseNoWidth: "6mm",
+      clauseTextMargin: "7mm",
+      clauseFragmentGap: "0mm",
+      finalClauseFragmentGap: "0.5mm",
+      maxChunkLength: 44
     }
   };
 
@@ -577,8 +597,8 @@
       "Noto Sans CJK TC",
       "Noto Sans CJK SC",
       sans-serif;
-    font-size: 10.5pt;
-    line-height: 1.55;
+    font-size: ${settings.bodyFontSize};
+    line-height: ${settings.bodyLineHeight};
   }
 
   body::before,
@@ -631,10 +651,10 @@
   }
 
   h1 {
-    margin: 0 0 7mm 0;
+    margin: ${settings.titleMargin};
     padding: 0;
     text-align: center;
-    font-size: 18pt;
+    font-size: ${settings.titleFontSize};
     line-height: 1.25;
     font-weight: 700;
     page-break-after: avoid;
@@ -642,12 +662,12 @@
   }
 
   p {
-    margin: 0 0 3.4mm 0;
+    margin: ${settings.paragraphMargin};
     padding: 0;
   }
 
   .meta {
-    margin: 5mm 0 6mm 0;
+    margin: ${settings.metaMargin};
   }
 
   .meta-row {
@@ -674,7 +694,7 @@
   }
 
   .intro {
-    margin-bottom: 4.2mm;
+    margin: ${settings.introMargin};
     font-weight: 700;
     page-break-after: avoid;
     break-after: avoid;
@@ -682,7 +702,7 @@
 
   .clause {
     display: block;
-    margin: 0 0 3mm 0;
+    margin: ${settings.clauseMargin};
     padding: 0;
     page-break-inside: auto;
     break-inside: auto;
@@ -706,12 +726,12 @@
 
   .clause-no {
     float: left;
-    width: 8mm;
+    width: ${settings.clauseNoWidth};
     font-weight: 700;
   }
 
   .clause-text {
-    margin-left: 9.5mm;
+    margin-left: ${settings.clauseTextMargin};
     text-align: justify;
     text-justify: inter-ideograph;
     word-break: break-word;
