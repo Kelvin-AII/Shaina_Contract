@@ -581,7 +581,7 @@
     width: 794px;
     height: 1123px;
     margin: 0;
-    padding: 45px 45px 52px 45px;
+    padding: 38px 42px 42px 42px;
     background: #ffffff;
     overflow: hidden;
     page-break-after: always;
@@ -656,6 +656,14 @@
     break-inside: auto;
     orphans: 2;
     widows: 2;
+  }
+
+  .clause.clause-fragment {
+    margin-bottom: 1.5mm;
+  }
+
+  .clause.clause-fragment.is-final-fragment {
+    margin-bottom: 3mm;
   }
 
   .clause::after {
@@ -1162,6 +1170,81 @@ ${contract}
     return { page, content };
   }
 
+  function splitClauseText(text) {
+    const cleanText = String(text || "").replace(/\s+/g, " ").trim();
+    const maxChunkLength = 150;
+    const sentences = cleanText.match(/[^。！？；;]+[。！？；;]?/g) || [cleanText];
+    const chunks = [];
+    let current = "";
+
+    sentences.forEach(sentence => {
+      const part = sentence.trim();
+
+      if (!part) return;
+
+      if (current && current.length + part.length > maxChunkLength) {
+        chunks.push(current);
+        current = part;
+      } else {
+        current += part;
+      }
+
+      while (current.length > maxChunkLength * 1.6) {
+        chunks.push(current.slice(0, maxChunkLength));
+        current = current.slice(maxChunkLength);
+      }
+    });
+
+    if (current) {
+      chunks.push(current);
+    }
+
+    return chunks.length ? chunks : [cleanText];
+  }
+
+  function createClauseFragment(doc, number, text, isFirst, isFinal) {
+    const clause = doc.createElement("div");
+    const clauseNo = doc.createElement("div");
+    const clauseText = doc.createElement("div");
+
+    clause.className = "clause clause-fragment" + (isFinal ? " is-final-fragment" : "");
+    clauseNo.className = "clause-no";
+    clauseText.className = "clause-text";
+    clauseNo.textContent = isFirst ? number : "";
+    clauseText.textContent = text;
+    clause.appendChild(clauseNo);
+    clause.appendChild(clauseText);
+
+    return clause;
+  }
+
+  function createPdfFlowBlocks(doc, sourceBlocks) {
+    const blocks = [];
+
+    sourceBlocks.forEach(block => {
+      if (!block.classList || !block.classList.contains("clause")) {
+        blocks.push(block);
+        return;
+      }
+
+      const number = String(block.querySelector(".clause-no")?.textContent || "").trim();
+      const text = String(block.querySelector(".clause-text")?.textContent || "").trim();
+      const chunks = splitClauseText(text);
+
+      chunks.forEach((chunk, index) => {
+        blocks.push(createClauseFragment(
+          doc,
+          number,
+          chunk,
+          index === 0,
+          index === chunks.length - 1
+        ));
+      });
+    });
+
+    return blocks;
+  }
+
   function paginateContract(frame) {
     const doc = frame.contentDocument;
     const contract = doc.querySelector(".contract");
@@ -1171,6 +1254,7 @@ ${contract}
     }
 
     const sourceBlocks = Array.from(contract.children).map(child => child.cloneNode(true));
+    const flowBlocks = createPdfFlowBlocks(doc, sourceBlocks);
     const pages = doc.createElement("div");
     let current = createPdfPage(doc);
 
@@ -1179,7 +1263,7 @@ ${contract}
     contract.textContent = "";
     contract.appendChild(pages);
 
-    sourceBlocks.forEach(block => {
+    flowBlocks.forEach(block => {
       current.content.appendChild(block);
 
       if (current.content.scrollHeight > current.content.clientHeight + 1) {
