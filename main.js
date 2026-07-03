@@ -1140,6 +1140,14 @@ ${contract}
     return `${safeName}-${signDate}-许可协议.docx`;
   }
 
+  function getPagesFilename() {
+    const name = getValue("name") || "contract";
+    const signDate = getValue("signDate") || formatDate(new Date());
+    const safeName = String(name).replace(/[\\/:*?"<>|]+/g, "-").trim() || "contract";
+
+    return `${safeName}-${signDate}-许可协议-Pages可打开.docx`;
+  }
+
   function saveBlob(blob, filename) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -1688,9 +1696,10 @@ ${contract}
     }
   }
 
-  async function downloadWord() {
-    const downloadWordBtn = $("downloadWordBtn");
-    const originalText = downloadWordBtn ? downloadWordBtn.textContent : "";
+  async function downloadEditableDocument(options) {
+    const settings = options || {};
+    const button = $(settings.buttonId);
+    const originalText = button ? button.textContent : "";
 
     try {
       ensureWordLibrary();
@@ -1699,9 +1708,9 @@ ${contract}
         return;
       }
 
-      if (downloadWordBtn) {
-        downloadWordBtn.disabled = true;
-        downloadWordBtn.textContent = "正在生成 Word...";
+      if (button) {
+        button.disabled = true;
+        button.textContent = settings.loadingText;
       }
 
       const doc = buildWordDocument();
@@ -1710,22 +1719,43 @@ ${contract}
         type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       });
 
-      saveBlob(blob, getWordFilename());
+      saveBlob(blob, settings.filename());
     } catch (err) {
       console.error(err);
-      alert("下载 Word 失败：" + err.message);
+      alert(settings.errorPrefix + err.message);
     } finally {
-      if (downloadWordBtn) {
-        downloadWordBtn.disabled = false;
-        downloadWordBtn.textContent = originalText || "下载 Word";
+      if (button) {
+        button.disabled = false;
+        button.textContent = originalText || settings.defaultText;
       }
     }
+  }
+
+  async function downloadWord() {
+    await downloadEditableDocument({
+      buttonId: "downloadWordBtn",
+      loadingText: "正在生成 Word...",
+      defaultText: "下载 Word",
+      errorPrefix: "下载 Word 失败：",
+      filename: getWordFilename
+    });
+  }
+
+  async function downloadPages() {
+    await downloadEditableDocument({
+      buttonId: "downloadPagesBtn",
+      loadingText: "正在生成 Pages...",
+      defaultText: "下载 Pages 档案",
+      errorPrefix: "下载 Pages 失败：",
+      filename: getPagesFilename
+    });
   }
 
   window.parseInput = parseInput;
   window.calculate = calculate;
   window.downloadPDF = downloadPDF;
   window.downloadWord = downloadWord;
+  window.downloadPages = downloadPages;
   window.fillInputTemplate = fillInputTemplate;
   window.toggleExample = toggleExample;
 
@@ -1767,6 +1797,14 @@ ${contract}
     if (downloadWordBtn) {
       downloadWordBtn.addEventListener("click", function () {
         downloadWord();
+      });
+    }
+
+    const downloadPagesBtn = document.getElementById("downloadPagesBtn");
+
+    if (downloadPagesBtn) {
+      downloadPagesBtn.addEventListener("click", function () {
+        downloadPages();
       });
     }
 

@@ -9,7 +9,7 @@
   <script defer src="vendor/html2canvas.min.js"></script>
   <script defer src="vendor/jspdf.umd.min.js"></script>
   <script defer src="vendor/docx.umd.js"></script>
-  <script defer src="main.js?v=20260703-14"></script>
+  <script defer src="main.js?v=20260703-15"></script>
 
   <style>
     * {
@@ -171,7 +171,7 @@
 
     .download-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
 
@@ -417,11 +417,12 @@
 
     <div class="button-row download-actions">
       <button type="button" class="secondary-button" id="downloadWordBtn">下载 Word</button>
+      <button type="button" class="secondary-button" id="downloadPagesBtn">下载 Pages 档案</button>
       <button type="button" id="downloadPdfBtn">下载 PDF</button>
     </div>
 
     <div class="note">
-      点击“下载 Word”会直接下载 Word 文件；点击“下载 PDF”需要先完成客户签名。
+      点击“下载 Word”或“下载 Pages”会直接下载可编辑文档；点击“下载 PDF”需要先完成客户签名。
     </div>
   </div>
 
