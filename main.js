@@ -659,11 +659,11 @@
   }
 
   .clause.clause-fragment {
-    margin-bottom: 1.5mm;
+    margin-bottom: 0.8mm;
   }
 
   .clause.clause-fragment.is-final-fragment {
-    margin-bottom: 3mm;
+    margin-bottom: 2.4mm;
   }
 
   .clause::after {
@@ -1172,10 +1172,31 @@ ${contract}
 
   function splitClauseText(text) {
     const cleanText = String(text || "").replace(/\s+/g, " ").trim();
-    const maxChunkLength = 150;
+    const maxChunkLength = 58;
     const sentences = cleanText.match(/[^。！？；;]+[。！？；;]?/g) || [cleanText];
     const chunks = [];
     let current = "";
+
+    function splitLongChunk(value) {
+      let rest = value;
+
+      while (rest.length > maxChunkLength * 1.25) {
+        const windowText = rest.slice(0, maxChunkLength);
+        const breakpoint = Math.max(
+          windowText.lastIndexOf("，"),
+          windowText.lastIndexOf("。"),
+          windowText.lastIndexOf("；"),
+          windowText.lastIndexOf("、"),
+          windowText.lastIndexOf(" ")
+        );
+        const splitAt = breakpoint > maxChunkLength * 0.45 ? breakpoint + 1 : maxChunkLength;
+
+        chunks.push(rest.slice(0, splitAt).trim());
+        rest = rest.slice(splitAt).trim();
+      }
+
+      return rest;
+    }
 
     sentences.forEach(sentence => {
       const part = sentence.trim();
@@ -1189,9 +1210,8 @@ ${contract}
         current += part;
       }
 
-      while (current.length > maxChunkLength * 1.6) {
-        chunks.push(current.slice(0, maxChunkLength));
-        current = current.slice(maxChunkLength);
+      if (current.length > maxChunkLength * 1.25) {
+        current = splitLongChunk(current);
       }
     });
 
